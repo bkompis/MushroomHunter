@@ -13,7 +13,6 @@
 
     <modules>
         <module>persistence</module>
-        <module>persistence</module>
     </modules>
 
     <dependencyManagement>
