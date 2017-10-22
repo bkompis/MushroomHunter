@@ -4,10 +4,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Created by Matúš on 18.10.2017.
+ * Created by Buvko on 18.10.2017.
  */
 @Entity
-public class Hunter {
+public class MushroomHunter {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -19,7 +19,9 @@ public class Hunter {
 
     @NotNull
     @Column(nullable=false,unique=true)
-    private String surName;
+    private String surname;
+
+    private boolean isAdmin;
 
     private String personalInfo;
 
@@ -31,8 +33,8 @@ public class Hunter {
         return firstName;
     }
 
-    public String getSurName() {
-        return surName;
+    public String getSurname() {
+        return surname;
     }
 
     public String getPersonalInfo() {
@@ -43,20 +45,28 @@ public class Hunter {
         this.firstName = firstName;
     }
 
-    public void setSurName(String surName) {
-        this.surName = surName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public void setPersonalInfo(String personalInfo) {
         this.personalInfo = personalInfo;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     @Override
     public String toString() {
-        return "Hunter{" +
+        return "MushroomHunter{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", surName='" + surName + '\'' +
+                ", surname='" + surname + '\'' +
                 ", personalInfo='" + personalInfo + '\'' +
                 '}';
     }
@@ -64,20 +74,21 @@ public class Hunter {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Hunter)) return false;
+        if (!(o instanceof MushroomHunter)) return false;
 
-        Hunter hunter = (Hunter) o;
+        MushroomHunter mushroomHunter = (MushroomHunter) o;
 
-        if (!getFirstName().equals(hunter.getFirstName())) return false;
-        if (!getSurName().equals(hunter.getSurName())) return false;
-        return getPersonalInfo() != null ? getPersonalInfo().equals(hunter.getPersonalInfo()) : hunter.getPersonalInfo() == null;
+        if (!getFirstName().equals(mushroomHunter.getFirstName())) return false;
+        if (!getSurname().equals(mushroomHunter.getSurname())) return false;
+        return getPersonalInfo() != null ? getPersonalInfo().equals(mushroomHunter.getPersonalInfo()) : mushroomHunter.getPersonalInfo() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getFirstName().hashCode();
-        result = 31 * result + getSurName().hashCode();
+        result = 31 * result + getSurname().hashCode();
         result = 31 * result + (getPersonalInfo() != null ? getPersonalInfo().hashCode() : 0);
         return result;
     }
+
 }
