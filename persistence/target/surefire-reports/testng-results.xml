@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="cz.muni.fi.pa165.mushrooms.dao.MushroomTest" duration-ms="4129" started-at="2017-10-26T18:06:33Z" finished-at="2017-10-26T18:06:37Z">
+    <groups>
+    </groups>
+    <test name="Command line test" duration-ms="4129" started-at="2017-10-26T18:06:33Z" finished-at="2017-10-26T18:06:37Z">
+      <class name="cz.muni.fi.pa165.mushrooms.dao.MushroomTest">
+        <test-method status="PASS" signature="springTestContextBeforeTestClass()[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="springTestContextBeforeTestClass" is-config="true" duration-ms="9" started-at="2017-10-26T20:06:33Z" finished-at="2017-10-26T20:06:33Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestClass -->
+        <test-method status="PASS" signature="springTestContextPrepareTestInstance()[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="springTestContextPrepareTestInstance" is-config="true" duration-ms="3729" started-at="2017-10-26T20:06:33Z" depends-on-methods="org.springframework.test.context.testng.AbstractTestNGSpringContextTests.springTestContextBeforeTestClass" finished-at="2017-10-26T20:06:37Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextPrepareTestInstance -->
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="77" started-at="2017-10-26T20:06:37Z" finished-at="2017-10-26T20:06:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void cz.muni.fi.pa165.mushrooms.dao.MushroomTest.createPrice()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestMethod -->
+        <test-method status="PASS" signature="createPrice()[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="createPrice" duration-ms="290" started-at="2017-10-26T20:06:37Z" finished-at="2017-10-26T20:06:37Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createPrice -->
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="10" started-at="2017-10-26T20:06:37Z" finished-at="2017-10-26T20:06:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void cz.muni.fi.pa165.mushrooms.dao.MushroomTest.createPrice()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestMethod -->
+        <test-method status="PASS" signature="springTestContextAfterTestClass()[pri:0, instance:cz.muni.fi.pa165.mushrooms.dao.MushroomTest@436e852b]" name="springTestContextAfterTestClass" is-config="true" duration-ms="0" started-at="2017-10-26T20:06:37Z" finished-at="2017-10-26T20:06:37Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestClass -->
+      </class> <!-- cz.muni.fi.pa165.mushrooms.dao.MushroomTest -->
+    </test> <!-- Command line test -->
+  </suite> <!-- cz.muni.fi.pa165.mushrooms.dao.MushroomTest -->
+</testng-results>
