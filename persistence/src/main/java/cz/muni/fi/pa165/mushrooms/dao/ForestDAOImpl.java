@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author Ludmila Fialova
+ * @author lindar84
  */
 public class ForestDAOImpl implements ForestDao {
 
