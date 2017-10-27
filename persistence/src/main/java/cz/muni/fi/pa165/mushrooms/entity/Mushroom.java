@@ -92,4 +92,5 @@ public class Mushroom {
     public int hashCode() {
         return 37 * name.hashCode() * type.hashCode() * intervalOfOccurence.hashCode();
     }
+
 }
