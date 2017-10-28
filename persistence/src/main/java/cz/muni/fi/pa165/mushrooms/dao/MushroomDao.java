@@ -20,6 +20,14 @@ public interface MushroomDao {
     public Mushroom findById(Long id);
 
     /**
+     * Takes mushroom type and returns a corresponding List of found entities
+     *
+     * @param mushroomType non-null
+     * @return List of Mushroom, empty List if no Mushroom is found
+     */
+    public List<Mushroom> findByMushroomType(Enum mushroomType);
+
+    /**
      * Takes an object of type Mushroom and creates an entry in a database
      *
      * @param mushroom non-null object to be created in a database
