@@ -36,19 +36,20 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     @Before
     public void setUp(){
         // create hunters
-        hunter1 = createMushroomHunter("John", "Doe");
-        hunter2 = createMushroomHunter("Jack", "Daniels");
+        hunter1 = createMushroomHunter("John", "Doe", "Johny");
+        hunter2 = createMushroomHunter("Jack", "Daniels", "Dan");
 
         // persist hunters
         em.persist(hunter1);
         em.persist(hunter2);
     }
 
-    private static MushroomHunter createMushroomHunter(String firstName, String surname){
+    private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname){
         MushroomHunter hunter = new MushroomHunter();
         hunter.setFirstName(firstName);
         hunter.setSurname(surname);
-        hunter.setPersonalInfo("The mushroom hunter " + firstName + " " + surname);
+        hunter.setUserNickname(userNickname);
+        hunter.setPersonalInfo("The mushroom hunter "+ userNickname + " - " + firstName + " " + surname);
         return hunter;
     }
 

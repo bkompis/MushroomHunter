@@ -55,5 +55,12 @@ public interface MushroomHunterDao {
      * @param surname String object, search criteria for MushroomHunter entity
      */
     public List<MushroomHunter> findBySurname(String surname);
+
+    /**
+     * Returns the list all MushroomHunter entities with given nickname
+     *
+     * @param userNickname String object, search criteria for MushroomHunter entity
+     */
+    public List<MushroomHunter> findByNickame(String userNickname);
 }
 

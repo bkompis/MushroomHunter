@@ -1,20 +1,16 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author Buvko
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "userNickname")})
 public class MushroomHunter {
 
     @Id
@@ -34,6 +30,10 @@ public class MushroomHunter {
     Set<Visit> visits = new HashSet<>();
 
     private boolean isAdmin;
+
+    @NotNull
+    @Column(nullable=false, unique = true)
+    private String userNickname;
 
     @Column
     private String personalInfo;
@@ -82,6 +82,14 @@ public class MushroomHunter {
         visits.add(visit);
     }
 
+    public String getUserNickname() {
+        return userNickname;
+    }
+
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname;
+    }
+
     @Override
     public String toString() {
         return "MushroomHunter{" +
@@ -92,23 +100,25 @@ public class MushroomHunter {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MushroomHunter)) return false;
-
-        MushroomHunter mushroomHunter = (MushroomHunter) o;
-
-        if (!getFirstName().equals(mushroomHunter.getFirstName())) return false;
-        if (!getSurname().equals(mushroomHunter.getSurname())) return false;
-        return getPersonalInfo() != null ? getPersonalInfo().equals(mushroomHunter.getPersonalInfo()) : mushroomHunter.getPersonalInfo() == null;
-    }
 
     @Override
     public int hashCode() {
-        int result = getFirstName().hashCode();
-        result = 31 * result + getSurname().hashCode();
-        result = 31 * result + (getPersonalInfo() != null ? getPersonalInfo().hashCode() : 0);
-        return result;
+        return Objects.hash(getUserNickname());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof MushroomHunter)) {
+            return false;
+        }
+
+        MushroomHunter mushroomHunter = (MushroomHunter) o;
+        return Objects.equals(getUserNickname(), mushroomHunter.getUserNickname());
     }
 }

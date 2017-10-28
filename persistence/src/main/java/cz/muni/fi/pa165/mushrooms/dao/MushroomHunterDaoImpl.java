@@ -1,8 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
-
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -77,6 +77,19 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
                             MushroomHunter.class).setParameter("surname", surname)
                     .getResultList();
         } catch (NoResultException nrf) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<MushroomHunter> findByNickame(String userNickname) {
+        if(userNickname == null) {
+            throw new IllegalArgumentException("user nickname is null");
+        }
+        try {
+            return em.createQuery("select c from MushroomHunter c where c.userNickname like :userNickname", MushroomHunter.class)
+                    .setParameter("userNickname", "%"+userNickname+"%").getResultList();
+        }catch (NoResultException e){
             return null;
         }
     }
