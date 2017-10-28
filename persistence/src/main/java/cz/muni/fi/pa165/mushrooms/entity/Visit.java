@@ -1,12 +1,9 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
-
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
-import javax.persistence.AttributeConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,38 +11,34 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.sql.Date;
 import java.util.Objects;
 
 /**
- *
  * @author bkompis
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"visit_hunter", "visit_forest", "date"})}) // combination of 3 attributes must be unique
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"visit_hunter", "visit_forest", "date"})})
 public class Visit {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @ManyToOne //todo: other side
-    @JoinColumn(name="visit_hunter", nullable=false)
+    @ManyToOne
+    @JoinColumn(name = "visit_hunter", nullable = false)
     private MushroomHunter hunter;
 
     @NotNull
-    @ManyToOne //todo: other side
-    @JoinColumn(name="visit_forest", nullable=false)
+    @ManyToOne
+    @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
     @NotNull
     @Convert(converter = LocalDateAttributeConverter.class) // explicit assignment of attribute converter
-    @Column(nullable=false)
+    @Column(nullable = false)
     private LocalDate date;
 
     @Column
