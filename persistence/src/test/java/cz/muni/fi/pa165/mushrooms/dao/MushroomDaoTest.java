@@ -18,7 +18,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+
 import java.util.Date;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -83,6 +85,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         Mushroom mush = em.find(Mushroom.class,em.contains(mushroom)? mushroom : em.merge(mushroom));
 
+
         assertThat(mush).isEqualToComparingFieldByField(mushroom);
 
     }
@@ -123,6 +126,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         assertThat(mushroom).isNull();
     }
 
+
     @Test
     public void findByMushroomType() throws Exception {
         List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.EDIBLE);
@@ -156,6 +160,5 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
     }
-
-
+    
 }
