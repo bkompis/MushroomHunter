@@ -18,6 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -80,9 +81,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         Mushroom mushroom = createMushroom("WierdMushroom", MushroomType.UNEDIBLE, "May", "July");
         mushroomDao.create(mushroom);
 
-        em.getTransaction().begin();
         Mushroom mush = em.find(Mushroom.class,em.contains(mushroom)? mushroom : em.merge(mushroom));
-        em.getTransaction().commit();
 
         assertThat(mush).isEqualToComparingFieldByField(mushroom);
 
@@ -123,5 +122,40 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         Mushroom mushroom = mushroomDao.findByName("randomName");
         assertThat(mushroom).isNull();
     }
+
+    @Test
+    public void findByMushroomType() throws Exception {
+        List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.EDIBLE);
+        assertThat(list).hasSize(1);
+    }
+
+    @Test
+    public void findByMushroomType_empty() throws Exception {
+        List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.UNEDIBLE);
+        assertThat(list).hasSize(0);
+    }
+
+    @Test
+    public void update() throws Exception {
+        mushroom1.setType(MushroomType.EDIBLE);
+        mushroomDao.update(mushroom1);
+
+        Mushroom mushroom  = em.createQuery("select m from Mushroom m where m.name = name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
+
+        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+
+    }
+
+    @Test
+    public void findByIntervaOfOccurence() throws Exception {
+
+        Date begin = new Date(1496275200);
+        Date end = new Date(1498867200);
+
+        Mushroom mushroom = mushroomDao.findByIntervalOfOccurrence(begin,end);
+
+        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+    }
+
 
 }
