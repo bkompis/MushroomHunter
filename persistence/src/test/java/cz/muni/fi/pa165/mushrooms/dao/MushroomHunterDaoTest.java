@@ -12,9 +12,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,9 +30,6 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     @PersistenceContext
     private EntityManager em;
 
-    @PersistenceUnit
-    private EntityManagerFactory emf;
-
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
 
@@ -45,12 +40,8 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         hunter2 = createMushroomHunter("Jack", "Daniels");
 
         // persist hunters
-        EntityManager m = emf.createEntityManager();
-        m.getTransaction().begin();
         em.persist(hunter1);
         em.persist(hunter2);
-        m.getTransaction().commit();
-        m.close();
     }
 
     private static MushroomHunter createMushroomHunter(String firstName, String surname){
