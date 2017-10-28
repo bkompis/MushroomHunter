@@ -32,6 +32,12 @@ public interface MushroomHunterDao {
     public void delete(MushroomHunter c);
 
     /**
+     * Update a visit in the database with new values.
+     * @param c MushroomHunter object to update
+     */
+    void update(MushroomHunter c);
+
+    /**
      * Returns the list of all MushroomHunter entities stored in database
      */
     public List<MushroomHunter> findAll();

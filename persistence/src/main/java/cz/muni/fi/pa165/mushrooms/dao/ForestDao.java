@@ -8,7 +8,7 @@ import java.util.List;
  * @author bencikpeter
  */
 
-public interface ForestDao {
+public interface    ForestDao {
 
     /**
      * Takes unique id of Forest and returns a corresponding entity if found
@@ -24,6 +24,13 @@ public interface ForestDao {
      * @param forest non-null object to be created in a database
      */
     public void create(Forest forest);
+
+    /**
+     * Takes an object of type Forest and update an object in a database
+     *
+     * @param forest non-null object to be updated in a database
+     */
+    void update(Forest forest);
 
     /**
      * Takes a forest object that shall be deleted from database

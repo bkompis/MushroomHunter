@@ -23,12 +23,23 @@ public class ForestDAOImpl implements ForestDao {
 
     @Override
     public void create(Forest forest) {
+        if (forest == null){
+            throw new IllegalArgumentException("Null forest at create.");
+        }
         em.persist(forest);
     }
 
     @Override
-    public void delete(Forest forest) throws IllegalArgumentException {
-        em.remove(findById(forest.getId()));
+    public void update(Forest forest) {
+        if (forest == null){
+            throw new IllegalArgumentException("Null forest at update.");
+        }
+        em.merge(forest);
+    }
+
+    @Override
+    public void delete(Forest forest) {
+        em.remove(em.contains(forest) ? forest : em.merge(forest));
     }
 
     @Override
@@ -38,6 +49,9 @@ public class ForestDAOImpl implements ForestDao {
 
     @Override
     public Forest findByName(String name) {
+        if(name == null) {
+            throw new IllegalArgumentException("name is null");
+        }
         try {
             return em.createQuery("select f from Forest f where f.name like :name", Forest.class)
                     .setParameter("name", "%"+name+"%").getSingleResult();
