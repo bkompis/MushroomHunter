@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public interface MushroomDao {
      * @param mushroomType non-null
      * @return List of Mushroom, empty List if no Mushroom is found
      */
-    public List<Mushroom> findByMushroomType(Enum mushroomType);
+    public List<Mushroom> findByMushroomType(MushroomType mushroomType);
 
     /**
      * Takes an object of type Mushroom and creates an entry in a database
