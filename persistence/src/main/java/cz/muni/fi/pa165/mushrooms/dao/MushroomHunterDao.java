@@ -32,6 +32,12 @@ public interface MushroomHunterDao {
     public void delete(MushroomHunter c);
 
     /**
+     * Update a visit in the database with new values.
+     * @param c MushroomHunter object to update
+     */
+    void update(MushroomHunter c);
+
+    /**
      * Returns the list of all MushroomHunter entities stored in database
      */
     public List<MushroomHunter> findAll();
@@ -49,5 +55,12 @@ public interface MushroomHunterDao {
      * @param surname String object, search criteria for MushroomHunter entity
      */
     public List<MushroomHunter> findBySurname(String surname);
+
+    /**
+     * Returns the list all MushroomHunter entities with given nickname
+     *
+     * @param userNickname String object, search criteria for MushroomHunter entity
+     */
+    public List<MushroomHunter> findByNickame(String userNickname);
 }
 

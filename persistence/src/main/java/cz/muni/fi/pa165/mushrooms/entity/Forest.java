@@ -5,24 +5,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * @author bencikpeter
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Forest {
-
-
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable=false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    
     private String description;
 
     public Long getId() {
@@ -60,21 +61,22 @@ public class Forest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof Forest)) {
+            return false;
+        }
 
         Forest forest = (Forest) o;
-
-        if (id != null ? !id.equals(forest.id) : forest.id != null) return false;
-        if (name != null ? !name.equals(forest.name) : forest.name != null) return false;
-        return description != null ? description.equals(forest.description) : forest.description == null;
+        return Objects.equals(getName(), forest.getName());
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+        return Objects.hash(getName());
     }
 }
