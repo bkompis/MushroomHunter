@@ -5,10 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author bencikpeter
@@ -25,6 +29,10 @@ public class Forest {
     private String name;
 
     private String description;
+
+    @OneToMany(mappedBy = "forest")
+    @Column(nullable = false)
+    private Set<Visit> visits = new HashSet<>(); //todo: methods
 
     public Long getId() {
         return id;
@@ -48,6 +56,10 @@ public class Forest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Visit> getVisits(){
+        return Collections.unmodifiableSet(visits);
     }
 
     @Override
