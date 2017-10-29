@@ -6,14 +6,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
+import javax.validation.ConstraintViolationException;
 
 import java.util.List;
 
@@ -24,9 +27,13 @@ import static org.assertj.core.api.Assertions.*;
  *
  * @author bkompis
  */
-@ContextConfiguration(classes= PersistenceSampleApplicationContext.class)
+@ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional
+// recreates the whole context for each test method - large overhead and unnecessary
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+// todo research: run tests in a transaction, roll back after test method
+//@Transactional
+//@TransactionConfiguration(defaultRollback=true)
 public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
@@ -35,26 +42,33 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     @PersistenceContext
     private EntityManager em;
 
+    @PersistenceUnit
+    private EntityManagerFactory emf;
+
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // create hunters
-        hunter1 = createMushroomHunter("John", "Doe", "Johny");
+        hunter1 = createMushroomHunter("John", "Doe", "Johnny");
         hunter2 = createMushroomHunter("Jack", "Daniels", "Dan");
 
         // persist hunters
-        em.persist(hunter1);
-        em.persist(hunter2);
+        EntityManager m = emf.createEntityManager();
+        m.getTransaction().begin();
+        m.persist(hunter1);
+        m.persist(hunter2);
+        m.getTransaction().commit();
+        m.close();
     }
 
-    private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname){
+    private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
         MushroomHunter hunter = new MushroomHunter();
         hunter.setFirstName(firstName);
         hunter.setSurname(surname);
         hunter.setUserNickname(userNickname);
-        hunter.setPersonalInfo("The mushroom hunter "+ userNickname + " - " + firstName + " " + surname);
+        hunter.setPersonalInfo("The mushroom hunter " + userNickname + " - " + firstName + " " + surname);
         return hunter;
     }
 
@@ -62,13 +76,12 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     public void findById_validId() throws Exception {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
         assertThat(hunter).isNotNull();
-        assertThat(hunter).isEqualToComparingFieldByField(hunter1);
         assertThat(hunter).isEqualTo(hunter1);
     }
 
     @Test
     public void findById_nullId() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.findById(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> mushroomHunterDao.findById(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -78,12 +91,12 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAll_valid() throws Exception {
         assertThat(mushroomHunterDao.findAll()).containsExactlyInAnyOrder(hunter1, hunter2);
     }
 
     @Test
-    public void findByFirstName_validName() throws Exception {
+    public void findByFirstName_valid() throws Exception {
         List<MushroomHunter> found = mushroomHunterDao.findByFirstName("John");
         assertThat(found).containsExactly(hunter1);
     }
@@ -91,11 +104,13 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void findByFirstName_unknownName() throws Exception {
         List<MushroomHunter> found = mushroomHunterDao.findByFirstName("Nonexistent");
-        assertThat(found).isEmpty(); // or null?
+        assertThat(found).isEmpty();
     }
+
     @Test
     public void findByFirstName_nullName() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.findByFirstName(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> mushroomHunterDao.findByFirstName(null))
+                .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -107,53 +122,174 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void findBySurname_unknownName() throws Exception {
         List<MushroomHunter> found = mushroomHunterDao.findBySurname("Nonexistent");
-        assertThat(found).isEmpty(); // or null?
+        assertThat(found).isEmpty();
     }
 
     @Test
     public void findBySurname_nullName() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.findBySurname(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> mushroomHunterDao.findBySurname(null))
+                .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void findByNickname_valid() throws Exception {
+        List<MushroomHunter> found = mushroomHunterDao.findByNickame("Johnny");
+        assertThat(found).containsExactly(hunter1);
+    }
+
+    @Test
+    public void findByNickname_unknownNickname() throws Exception {
+        List<MushroomHunter> found = mushroomHunterDao.findByNickame("Nonexistent");
+        assertThat(found).isEmpty();
+    }
+
+    @Test
+    public void findByNickname_nullName() throws Exception {
+        assertThatThrownBy(() -> mushroomHunterDao.findByNickame(null))
+                .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void create_valid() throws Exception {
-        MushroomHunter newHunter = createMushroomHunter("Sylvanas", "Windrunner");
+        MushroomHunter newHunter = createMushroomHunter("Sylvanas", "Windrunner", "banshee");
+        assertThat(newHunter.getId()).isNull();
         mushroomHunterDao.create(newHunter);
         assertThat(newHunter.getId()).isNotNull();
-        assertThat(newHunter.getId()).isNotEqualTo(0); // necessary?
 
         //compare the the newly created entity with the one stored in the database
-        assertThat(newHunter).isEqualToComparingFieldByField(mushroomHunterDao.findById(newHunter.getId()));
-    }
-
-
-    @Test
-    public void create_entityHasDuplicateId() throws Exception {
-        // todo: no setId() method
+        assertThat(newHunter).isEqualTo(mushroomHunterDao.findById(newHunter.getId()));
     }
 
     @Test
-    public void create_duplicateEntity() throws Exception{
-        //todo: needs proper unique constraints
-/*        try{
-            mushroomHunterDao.create(hunter1);
-        } catch (Exception e) {
-            System.err.println(e);
-        }*/
-        //assertThatThrownBy(() -> mushroomHunterDao.create(hunter1)).isInstanceOf(JpaSystemException.class);
+    public void create_valid_similarEntity() throws Exception {
+        MushroomHunter newHunter = createMushroomHunter(hunter1.getFirstName(), hunter1.getSurname(), "different");
+        assertThat(newHunter.getId()).isNull();
+        mushroomHunterDao.create(newHunter);
+        assertThat(newHunter.getId()).isNotNull();
+
+        //compare the the newly created entity with the one stored in the database
+        assertThat(newHunter).isEqualTo(mushroomHunterDao.findById(newHunter.getId()));
     }
 
     @Test
-    public void create_entityAlreadySaved() throws Exception {
-        //TODO: need proper unique constraints
-        /*MushroomHunter newHunter = createMushroomHunter(hunter1.getFirstName(), hunter1.getSurname());
-        assertThatThrownBy(() -> mushroomHunterDao.create(newHunter)).isInstanceOf(JpaSystemException.class);*/
+    public void create_duplicateEntity() throws Exception {
+        MushroomHunter h = createMushroomHunter("Unused", "Name", hunter1.getUserNickname());
+        assertThatThrownBy(() -> mushroomHunterDao.create(h)).isInstanceOf(JpaSystemException.class);
     }
-//TODO: null names (create, update, delete)
-//TODO: tests for update
 
     @Test
-    public void delete() throws Exception {
+    public void create_nullFirstName() throws Exception {
+        MushroomHunter h = createMushroomHunter(null, "Name", "im_awesome");
+        assertThatThrownBy(() -> mushroomHunterDao.create(h)).isInstanceOf(ConstraintViolationException.class);
     }
+
+    @Test
+    public void create_nullSurname() throws Exception {
+        MushroomHunter h = createMushroomHunter("Unused", null, "im_awesome");
+        assertThatThrownBy(() -> mushroomHunterDao.create(h)).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void create_nullNickname() throws Exception {
+        MushroomHunter h = createMushroomHunter("Unused", "Name", null);
+        assertThatThrownBy(() -> mushroomHunterDao.create(h)).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void create_nullEntity() throws Exception {
+        assertThatThrownBy(() -> mushroomHunterDao.create(null))
+                .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void update_valid() throws Exception {
+        hunter1.setFirstName("Changeling");
+        hunter1.setSurname("Skinchanger");
+        hunter1.setUserNickname("Unused");
+        hunter1.setAdmin(true);
+        hunter1.setPersonalInfo("Someone else now.");
+        mushroomHunterDao.update(hunter1);
+
+        // get the updated entity from the database and compare
+        MushroomHunter found = mushroomHunterDao.findById(hunter1.getId());
+        assertThat(found).isEqualTo(hunter1);
+    }
+
+    @Test
+    public void update_valid_managedEntity() throws Exception {
+        MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
+        hunter.setFirstName("Changeling");
+        hunter.setSurname("Skinchanger");
+        hunter.setUserNickname("Unused");
+        hunter.setAdmin(true);
+        hunter.setPersonalInfo("Someone else now.");
+        mushroomHunterDao.update(hunter);
+
+        // get the updated entity from the database and compare
+        MushroomHunter found = mushroomHunterDao.findById(hunter.getId());
+        assertThat(found).isEqualTo(hunter);
+        assertThat(found.getFirstName()).isEqualTo("Changeling");
+        assertThat(found.getSurname()).isEqualTo("Skinchanger");
+        assertThat(found.getUserNickname()).isEqualTo("Unused");
+        assertThat(found.isAdmin()).isTrue();
+    }
+
+    @Test
+    public void update_duplicateNickname() throws Exception {
+        MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
+        hunter.setUserNickname(hunter2.getUserNickname());
+        // constraint violation wrapped in JpaSystemException
+        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).isInstanceOf(JpaSystemException.class);
+    }
+
+    @Test
+    public void update_nullNickname() throws Exception {
+        MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
+        hunter.setUserNickname(null);
+        assertThat(hunter.getUserNickname()).isNull();
+        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void update_nullFirstName() throws Exception {
+        MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
+        hunter.setFirstName(null);
+        assertThat(hunter.getFirstName()).isNull();
+        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void update_nullSurname() throws Exception {
+        MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
+        hunter.setSurname(null);
+        assertThat(hunter.getSurname()).isNull();
+        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void update_nullEntity() throws Exception {
+        assertThatThrownBy(() -> mushroomHunterDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void delete_valid() throws Exception {
+        assertThat(mushroomHunterDao.findAll()).containsExactlyInAnyOrder(hunter1, hunter2);
+        mushroomHunterDao.delete(hunter1);
+        assertThat(mushroomHunterDao.findAll()).containsExactly(hunter2);
+    }
+
+    @Test
+    public void delete_entityNotPersisted() throws Exception {
+        MushroomHunter newHunter = createMushroomHunter("Sylvanas", "Windrunner", "banshee");
+        mushroomHunterDao.delete(newHunter); // should not do anything
+        assertThat(mushroomHunterDao.findAll()).containsExactlyInAnyOrder(hunter1, hunter2);
+    }
+
+    @Test
+    public void delete_nullEntity() throws Exception {
+        assertThatThrownBy(() -> mushroomHunterDao.delete(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
+    }
+
+    //TODO: cascading delete tests (Visit set)
 
 }

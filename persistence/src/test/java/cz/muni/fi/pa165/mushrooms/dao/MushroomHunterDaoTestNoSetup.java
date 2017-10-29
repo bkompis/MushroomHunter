@@ -1,13 +1,12 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
-import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,10 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author bkompis
  */
-@ContextConfiguration(classes= PersistenceSampleApplicationContext.class)
+@ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional
-public class MushroomHunterDaoTestNoSetup {
+public class MushroomHunterDaoTestNoSetup extends AbstractJUnit4SpringContextTests {
     @Autowired
     private MushroomHunterDao mushroomHunterDao;
 
@@ -31,25 +29,21 @@ public class MushroomHunterDaoTestNoSetup {
 
     @Test
     public void findAll_emptyDatabase() throws Exception {
-        assertThat(mushroomHunterDao.findAll()).isEmpty(); //or null?
+        assertThat(mushroomHunterDao.findAll()).isEmpty();
     }
 
     @Test
     public void findByFirstName_emptyDatabase() throws Exception {
-        assertThat(mushroomHunterDao.findByFirstName("anything")).isEmpty(); // or null
+        assertThat(mushroomHunterDao.findByFirstName("anything")).isEmpty();
     }
 
     @Test
     public void findBySurname() throws Exception {
-        assertThat(mushroomHunterDao.findBySurname("anything")).isEmpty(); // or null
-
+        assertThat(mushroomHunterDao.findBySurname("anything")).isEmpty();
     }
 
     @Test
-    public void create_entityHasId() throws Exception {
-        MushroomHunter hunter = new MushroomHunter();
-        hunter.setFirstName("John");
-        hunter.setSurname("Doe");
-
+    public void findByNickname() throws Exception {
+        assertThat(mushroomHunterDao.findByNickame("anything")).isEmpty();
     }
 }
