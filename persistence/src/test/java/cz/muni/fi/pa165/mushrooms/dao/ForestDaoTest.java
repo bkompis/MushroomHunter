@@ -14,13 +14,12 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Created by Matúš on 28.10.2017.
+ * @author Buvko
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
@@ -33,6 +32,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
     private EntityManager em;
 
     private Forest forest;
+    private Forest forest2;
 
     @Before
     public void setUp(){
@@ -40,7 +40,12 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
         forest.setName("Dun Morogh");
         forest.setDescription("Dun Morogh forest in South Wisconsin");
 
+        forest2 = new Forest();
+        forest2.setName("Sholazar Basin");
+        forest2.setDescription("Sholazar Basin forest in Northrend");
+
         em.persist(forest);
+        em.persist(forest2);
         em.flush();
     }
 
@@ -55,6 +60,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
 
         assertThat(foundForest).isNotNull();
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate + 1);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2, foundForest);
     }
 
     @Test
@@ -73,25 +79,15 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void create_ForestWithNonUniqueName() throws Exception {
         Forest testForest = new Forest();
-        testForest.setName("Dun Morogh");
+        testForest.setName(forest.getName());
 
-       assertThatThrownBy(() -> forestDao.create(testForest)).isInstanceOf(JpaSystemException.class);
+        assertThatThrownBy(() -> forestDao.create(testForest)).isInstanceOf(JpaSystemException.class);
     }
 
     @Test
     public void create_ExistingForest() {
         int sizeBeforeCreate = forestDao.findAll().size();
         forestDao.create(forest);
-
-        // Inserting same object will not raise the number of database entities
-        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
-    }
-
-    @Test
-    public void create_ForestWithExistingId() {
-        int sizeBeforeCreate = forestDao.findAll().size();
-        Forest testForest = new Forest();
-        testForest.setId(forest.getId());
 
         // Inserting same object will not raise the number of database entities
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
@@ -105,6 +101,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
         em.flush();
 
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate - 1);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest2);
     }
 
     @Test
@@ -122,6 +119,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
         em.flush();
 
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2);
     }
 
     @Test
@@ -160,37 +158,51 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
         assertThat(foundForest.getName()).isNull();
         forestDao.update(foundForest);
         assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
-  }
-
-
-    @Test
-    public void findAll() throws Exception {
-        Forest testForest = new Forest();
-        testForest.setName("Silverpine Forest");
-        forestDao.create(testForest);
-
-        List<Forest> forests = forestDao.findAll();
-        // TODO
     }
 
     @Test
-    public void findByFirstName() throws Exception {
+    public void findAll_forests() throws Exception {
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2);
     }
 
     @Test
-    public void findBySurname() throws Exception {
+    public void findByName_withExistingForestName() throws Exception {
+        String forestName = "Dun Morogh";
+        Forest found = forestDao.findByName(forestName);
+        assertThat(found).isNotNull();
+        assertThat(found).isEqualTo(forest);
+    }
+
+    @Test
+    public void findByName_withNonExistingForestName() {
+        String forestName = "Terrokar forest";
+        Forest found = forestDao.findByName(forestName);
+        assertThat(found).isNull();
+    }
+
+    @Test
+    public void findByName_nullForestName() throws Exception {
+        assertThatThrownBy(() -> forestDao.findByName(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void findById_validId() throws Exception {
         Forest testForest = forestDao.findById(forest.getId());
         assertThat(testForest).isNotNull();
-        assertThat(testForest).isEqualToComparingFieldByField(forest);
+        assertThat(testForest).isEqualTo(forest);
     }
 
     @Test
     public void findById_nullId() throws Exception {
         assertThatThrownBy(() -> forestDao.findById(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    public void findById_invalidId() throws Exception {
+        Long invalidID = new Long(64);
+        Forest testForest = forestDao.findById(invalidID);
+        assertThat(testForest).isNull();
+    }
+
 
 }

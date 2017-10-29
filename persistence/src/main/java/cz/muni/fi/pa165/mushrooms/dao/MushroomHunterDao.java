@@ -20,22 +20,22 @@ public interface MushroomHunterDao {
     /**
      * Stores the MushroomHunter entity into persistent database
      *
-     * @param c MushroomHunter object
+     * @param mh MushroomHunter object
      */
-    public void create(MushroomHunter c);
+    public void create(MushroomHunter mh);
 
     /**
      * Deletes the MushroomHunter entry from persistent database
      *
-     * @param c MushroomHunter object
+     * @param mh MushroomHunter object
      */
-    public void delete(MushroomHunter c);
+    public void delete(MushroomHunter mh);
 
     /**
      * Update a visit in the database with new values.
-     * @param c MushroomHunter object to update
+     * @param mh MushroomHunter object to update
      */
-    void update(MushroomHunter c);
+    void update(MushroomHunter mh);
 
     /**
      * Returns the list of all MushroomHunter entities stored in database
