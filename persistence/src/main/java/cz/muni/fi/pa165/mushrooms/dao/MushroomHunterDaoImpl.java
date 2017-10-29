@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * @author Buvko
  */
-
 @Repository
 public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
@@ -31,7 +30,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public void create(MushroomHunter c) {
-        if (c == null){
+        if (c == null) {
             throw new IllegalArgumentException("Null mushroom hunter at create.");
         }
         em.persist(c);
@@ -44,7 +43,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public void update(MushroomHunter c) {
-        if (c == null){
+        if (c == null) {
             throw new IllegalArgumentException("Null mushroom hunter at update.");
         }
         em.merge(c);
@@ -52,7 +51,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findByFirstName(String firstName) {
-        if(firstName == null) {
+        if (firstName == null) {
             throw new IllegalArgumentException("firstName is null");
         }
 
@@ -68,7 +67,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findBySurname(String surname) {
-        if(surname == null) {
+        if (surname == null) {
             throw new IllegalArgumentException("surname is null");
         }
         try {
@@ -83,13 +82,13 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findByNickame(String userNickname) {
-        if(userNickname == null) {
+        if (userNickname == null) {
             throw new IllegalArgumentException("user nickname is null");
         }
         try {
             return em.createQuery("select c from MushroomHunter c where c.userNickname like :userNickname", MushroomHunter.class)
-                    .setParameter("userNickname", "%"+userNickname+"%").getResultList();
-        }catch (NoResultException e){
+                    .setParameter("userNickname", "%" + userNickname + "%").getResultList();
+        } catch (NoResultException e) {
             return null;
         }
     }
