@@ -2,8 +2,6 @@ package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -13,7 +11,6 @@ import java.util.List;
 /**
  * @author Buvko
  */
-@Transactional(propagation = Propagation.REQUIRED)
 @Repository
 public class MushroomHunterDaoImpl implements MushroomHunterDao {
 

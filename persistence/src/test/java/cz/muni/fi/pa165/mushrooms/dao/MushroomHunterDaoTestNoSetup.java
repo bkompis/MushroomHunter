@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class MushroomHunterDaoTestNoSetup extends AbstractJUnit4SpringContextTests {
+public class MushroomHunterDaoTestNoSetup extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
     private MushroomHunterDao mushroomHunterDao;
 

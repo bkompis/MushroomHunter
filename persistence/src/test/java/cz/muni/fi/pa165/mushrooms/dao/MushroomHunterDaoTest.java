@@ -6,16 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 
 import java.util.List;
@@ -29,21 +27,13 @@ import static org.assertj.core.api.Assertions.*;
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-// recreates the whole context for each test method - large overhead and unnecessary
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-// todo research: run tests in a transaction, roll back after test method
-//@Transactional
-//@TransactionConfiguration(defaultRollback=true)
-public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
+public class MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private MushroomHunterDao mushroomHunterDao;
 
     @PersistenceContext
     private EntityManager em;
-
-    @PersistenceUnit
-    private EntityManagerFactory emf;
 
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
@@ -55,12 +45,10 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         hunter2 = createMushroomHunter("Jack", "Daniels", "Dan");
 
         // persist hunters
-        EntityManager m = emf.createEntityManager();
-        m.getTransaction().begin();
-        m.persist(hunter1);
-        m.persist(hunter2);
-        m.getTransaction().commit();
-        m.close();
+        em.persist(hunter1);
+        em.persist(hunter2);
+        // flush is necessary to 'save' changes, particularly in collections stored in the entity (here, Visits)
+        em.flush();
     }
 
     private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
@@ -149,10 +137,12 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
                 .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
+    // note: create flushes automatically
     @Test
     public void create_valid() throws Exception {
         MushroomHunter newHunter = createMushroomHunter("Sylvanas", "Windrunner", "banshee");
         assertThat(newHunter.getId()).isNull();
+
         mushroomHunterDao.create(newHunter);
         assertThat(newHunter.getId()).isNotNull();
 
@@ -201,6 +191,7 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
                 .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
+    //note: update needs to be flushed; tests will pass without flush, but do not behave as expected (false positives)
     @Test
     public void update_valid() throws Exception {
         hunter1.setFirstName("Changeling");
@@ -208,8 +199,9 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         hunter1.setUserNickname("Unused");
         hunter1.setAdmin(true);
         hunter1.setPersonalInfo("Someone else now.");
-        mushroomHunterDao.update(hunter1);
 
+        mushroomHunterDao.update(hunter1);
+        em.flush();
         // get the updated entity from the database and compare
         MushroomHunter found = mushroomHunterDao.findById(hunter1.getId());
         assertThat(found).isEqualTo(hunter1);
@@ -223,7 +215,9 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         hunter.setUserNickname("Unused");
         hunter.setAdmin(true);
         hunter.setPersonalInfo("Someone else now.");
+
         mushroomHunterDao.update(hunter);
+        em.flush();
 
         // get the updated entity from the database and compare
         MushroomHunter found = mushroomHunterDao.findById(hunter.getId());
@@ -238,8 +232,9 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     public void update_duplicateNickname() throws Exception {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
         hunter.setUserNickname(hunter2.getUserNickname());
-        // constraint violation wrapped in JpaSystemException
-        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).isInstanceOf(JpaSystemException.class);
+        // constraint violation wrapped in PersistenceException
+        mushroomHunterDao.update(hunter); //does not flush
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(PersistenceException.class);
     }
 
     @Test
@@ -247,7 +242,8 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
         hunter.setUserNickname(null);
         assertThat(hunter.getUserNickname()).isNull();
-        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+        mushroomHunterDao.update(hunter); // does not flush
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
@@ -255,7 +251,8 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
         hunter.setFirstName(null);
         assertThat(hunter.getFirstName()).isNull();
-        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+        mushroomHunterDao.update(hunter); // does not flush
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
@@ -263,18 +260,24 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
         hunter.setSurname(null);
         assertThat(hunter.getSurname()).isNull();
-        assertThatThrownBy(() -> mushroomHunterDao.update(hunter)).hasRootCauseInstanceOf(ConstraintViolationException.class);
+        mushroomHunterDao.update(hunter); // does not flush
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
     public void update_nullEntity() throws Exception {
+        // exception happens before the database is even accessed == before flush
         assertThatThrownBy(() -> mushroomHunterDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
+    // note: delete does not flush automatically
     @Test
     public void delete_valid() throws Exception {
         assertThat(mushroomHunterDao.findAll()).containsExactlyInAnyOrder(hunter1, hunter2);
+
         mushroomHunterDao.delete(hunter1);
+        em.flush();
+
         assertThat(mushroomHunterDao.findAll()).containsExactly(hunter2);
     }
 
@@ -282,6 +285,7 @@ public class MushroomHunterDaoTest extends AbstractJUnit4SpringContextTests {
     public void delete_entityNotPersisted() throws Exception {
         MushroomHunter newHunter = createMushroomHunter("Sylvanas", "Windrunner", "banshee");
         mushroomHunterDao.delete(newHunter); // should not do anything
+        em.flush();
         assertThat(mushroomHunterDao.findAll()).containsExactlyInAnyOrder(hunter1, hunter2);
     }
 
