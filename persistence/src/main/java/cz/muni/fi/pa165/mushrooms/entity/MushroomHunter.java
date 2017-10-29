@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -33,10 +33,6 @@ public class MushroomHunter {
     @Column(nullable = false)
     private String surname;
 
-    @OneToMany
-    @JoinColumn(name = "hunter_visit", nullable = false)
-    Set<Visit> visits = new HashSet<>();
-
     private boolean isAdmin;
 
     @NotNull
@@ -45,6 +41,10 @@ public class MushroomHunter {
 
     @Column
     private String personalInfo;
+
+    @OneToMany(mappedBy = "hunter")
+    @Column(nullable = false)
+    private Set<Visit> visits = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -82,20 +82,16 @@ public class MushroomHunter {
         isAdmin = admin;
     }
 
-    public Set<Visit> getVisits() {
-        return visits;
-    }
-
-    public void visitForest(Visit visit) {
-        visits.add(visit);
-    }
-
     public String getUserNickname() {
         return userNickname;
     }
 
     public void setUserNickname(String userNickname) {
         this.userNickname = userNickname;
+    }
+
+    public Set<Visit> getVisits() {
+        return Collections.unmodifiableSet(visits);
     }
 
     @Override
