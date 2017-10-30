@@ -293,7 +293,4 @@ public class MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringCont
     public void delete_nullEntity() throws Exception {
         assertThatThrownBy(() -> mushroomHunterDao.delete(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
-
-    //TODO: cascading delete tests (Visit set)
-
 }

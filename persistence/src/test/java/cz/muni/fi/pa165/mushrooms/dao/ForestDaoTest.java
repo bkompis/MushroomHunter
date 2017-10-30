@@ -35,7 +35,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
     private Forest forest2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         forest = new Forest();
         forest.setName("Dun Morogh");
         forest.setDescription("Dun Morogh forest in South Wisconsin");
@@ -60,7 +60,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
 
         assertThat(foundForest).isNotNull();
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate + 1);
-        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2, foundForest);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest, forest2, foundForest);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
         em.flush();
 
         assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
-        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest, forest2);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void update_nullForest() {
-        assertThatThrownBy(() ->forestDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> forestDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -162,7 +162,7 @@ public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests
 
     @Test
     public void findAll_forests() throws Exception {
-        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest,forest2);
+        assertThat(forestDao.findAll()).containsExactlyInAnyOrder(forest, forest2);
     }
 
     @Test

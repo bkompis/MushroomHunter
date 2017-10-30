@@ -85,7 +85,7 @@ public class MushroomDaoImpl implements MushroomDao {
             throw new IllegalArgumentException("Parameter toMonth is null");
         }
 
-        String intervalOfOccurrence = fromMonth+" - "+toMonth;
+        String intervalOfOccurrence = fromMonth + " - " + toMonth;
 
         try {
             return em.createQuery("select m from Mushroom m " +

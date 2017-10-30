@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.utils;
 
+import javax.inject.Named;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.sql.Date;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
  * @author bkompis
  */
 // source: https://www.thoughts-on-java.org/persist-localdate-localdatetime-jpa/
+// does not work as expected, currently not used automatically.
 @Converter//(autoApply = true) // converts all LocalDates to java.sql.Date
 public class LocalDateAttributeConverter implements AttributeConverter<LocalDate, Date> {
 

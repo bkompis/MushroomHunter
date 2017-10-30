@@ -8,7 +8,7 @@ import java.util.List;
  * @author bencikpeter
  */
 
-public interface    ForestDao {
+public interface ForestDao {
 
     /**
      * Takes unique id of Forest and returns a corresponding entity if found
@@ -16,14 +16,14 @@ public interface    ForestDao {
      * @param id of Forest object, non-null
      * @return Forest entity if found, null otherwise
      */
-    public Forest findById(Long id);
+    Forest findById(Long id);
 
     /**
      * Takes an object of type Forest and creates an entry in a database
      *
      * @param forest non-null object to be created in a database
      */
-    public void create(Forest forest);
+    void create(Forest forest);
 
     /**
      * Takes an object of type Forest and update an object in a database
@@ -37,14 +37,14 @@ public interface    ForestDao {
      *
      * @param forest non-null object to be deleted from the database
      */
-    public void delete(Forest forest);
+    void delete(Forest forest);
 
     /**
      * Returns all Forests in the database
      *
      * @return List of all Forests, empty List if no Forest is found
      */
-    public List<Forest> findAll();
+    List<Forest> findAll();
 
     /**
      * Takes unique name of Forest and returns a corresponding entity if found
@@ -52,6 +52,6 @@ public interface    ForestDao {
      * @param name non-null string representing name
      * @return forest with given name if exists, null otherwise
      */
-    public Forest findByName(String name);
+    Forest findByName(String name);
 
 }

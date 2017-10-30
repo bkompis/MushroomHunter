@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.mushrooms.entity;
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -22,6 +22,7 @@ import java.util.Objects;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"visit_hunter", "visit_forest", "date"})})
 public class Visit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,10 +37,10 @@ public class Visit {
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
+    // not of type LocalDate, caused problems in db queries
     @NotNull
-    @Convert(converter = LocalDateAttributeConverter.class) // explicit assignment of attribute converter
     @Column(nullable = false)
-    private LocalDate date;
+    private Date date;
 
     @Column
     private String note;
@@ -58,7 +59,7 @@ public class Visit {
     }
 
     public LocalDate getDate() {
-        return date;
+        return new LocalDateAttributeConverter().convertToEntityAttribute(date);
     }
 
     public String getNote() {
@@ -79,7 +80,7 @@ public class Visit {
     }
 
     public void setDate(LocalDate date) {
-        this.date = date;
+        this.date = new LocalDateAttributeConverter().convertToDatabaseColumn(date);
     }
 
     public void setNote(String note) {

@@ -32,7 +32,7 @@ public class Forest {
 
     @OneToMany(mappedBy = "forest")
     @Column(nullable = false)
-    private Set<Visit> visits = new HashSet<>(); //todo: methods
+    private Set<Visit> visits = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -58,7 +58,7 @@ public class Forest {
         this.description = description;
     }
 
-    public Set<Visit> getVisits(){
+    public Set<Visit> getVisits() {
         return Collections.unmodifiableSet(visits);
     }
 
