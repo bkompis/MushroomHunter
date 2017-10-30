@@ -2,12 +2,14 @@ package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class MushroomDaoImpl implements MushroomDao {
 
     @PersistenceContext
@@ -25,7 +27,7 @@ public class MushroomDaoImpl implements MushroomDao {
         }
         try {
             return em.createQuery("select m from Mushroom m " +
-                    "where m.mushroomType= :mushroomType", Mushroom.class)
+                    "where m.type= :mushroomType", Mushroom.class)
                     .setParameter("mushroomType", mushroomType)
                     .getResultList();
         } catch (NoResultException e) {
@@ -83,11 +85,12 @@ public class MushroomDaoImpl implements MushroomDao {
             throw new IllegalArgumentException("Parameter toMonth is null");
         }
 
+        String intervalOfOccurrence = fromMonth+" - "+toMonth;
+
         try {
             return em.createQuery("select m from Mushroom m " +
-                    "where m.fromMonth= :fromMonth and m.toMonth= :toMonth", Mushroom.class)
-                    .setParameter("fromMonth", fromMonth)
-                    .setParameter("toMonth", toMonth)
+                    "where m.intervalOfOccurrence= :intervalOfOccurrence", Mushroom.class)
+                    .setParameter("intervalOfOccurrence", intervalOfOccurrence)
                     .getResultList();
         } catch (NoResultException e) {
             return null;
