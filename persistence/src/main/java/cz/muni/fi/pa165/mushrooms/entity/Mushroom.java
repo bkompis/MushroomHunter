@@ -7,30 +7,35 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
- *
  * @author Lindar84
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Mushroom {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable=false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @NotNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private MushroomType type;
 
+    /*
+     * Interval of occurrence of the mushroom in format Month - Month
+     */
     @NotNull
-    @Column(nullable=false)
-    private String intervalOfOccurence;
-
+    @Column(nullable = false)
+    private String intervalOfOccurrence;
 
     public Long getId() {
         return id;
@@ -56,23 +61,21 @@ public class Mushroom {
         this.type = type;
     }
 
-    public String getIntervalOfOccurence() {
-        return intervalOfOccurence;
+    public String getIntervalOfOccurrence() {
+        return intervalOfOccurrence;
     }
 
-    // "... in the following string format: "June - July" (month - month)"
-    // - is String enought? Wouldn't we need to use the dates for some sorting of mushrooms?
-    public void setIntervalOfOccurence(String startMonth, String endMonth) {
-        this.intervalOfOccurence = startMonth + " - " + endMonth;
+    public void setIntervalOfOccurrence(String startMonth, String endMonth) {
+        this.intervalOfOccurrence = startMonth + " - " + endMonth;
     }
 
-    // Do we want to write ID?
     @Override
     public String toString() {
         return "Mushroom{" +
-                "name = '" + name + '\'' +
-                ", type = " + type +
-                ", interval of occurence = '" + intervalOfOccurence + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", intervalOfOccurrence='" + intervalOfOccurrence + '\'' +
                 '}';
     }
 
@@ -80,17 +83,12 @@ public class Mushroom {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || !(o instanceof Mushroom)) return false;
-
         Mushroom mushroom = (Mushroom) o;
-
-        if(!name.equals(mushroom.name)) return false;
-        if(!type.equals(mushroom.type)) return false;
-        return intervalOfOccurence.equals(mushroom.intervalOfOccurence);
+        return Objects.equals(getName(), mushroom.getName());
     }
 
     @Override
     public int hashCode() {
-        return 37 * name.hashCode() * type.hashCode() * intervalOfOccurence.hashCode();
+        return Objects.hash(getName());
     }
-
 }
