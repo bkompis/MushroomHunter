@@ -9,15 +9,13 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 
 import java.util.Date;
@@ -32,7 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 @ContextConfiguration(classes= PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional
-public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
+public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private MushroomDao mushroomDao;
@@ -55,6 +53,8 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         em.persist(mushroom1);
         em.persist(mushroom2);
+
+        em.flush();
     }
 
     private static Mushroom createMushroom(String name, MushroomType type, String beginMonth,String endMonth){
@@ -70,12 +70,12 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     public void findById_validId() throws Exception {
         Mushroom mushroom = mushroomDao.findById(mushroom1.getId());
         assertThat(mushroom).isNotNull();
-        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+        assertThat(mushroom).isEqualTo(mushroom1);
     }
 
     @Test
     public void findById_invalidId() throws Exception {
-        Mushroom mushroom = mushroomDao.findById(mushroom1.getId()+20);
+        Mushroom mushroom = mushroomDao.findById(mushroom1.getId()+mushroom2.getId());
         assertThat(mushroom).isNull();
     }
 
@@ -86,7 +86,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void create() throws Exception {
-        Mushroom mushroom = createMushroom("WierdMushroom", MushroomType.UNEDIBLE, "May", "July");
+        Mushroom mushroom = createMushroom("WeirdMushroom", MushroomType.UNEDIBLE, "May", "July");
         mushroomDao.create(mushroom);
 
         List<Mushroom> list = em.createQuery("select m from Mushroom m", Mushroom.class)
@@ -135,6 +135,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     public void delete() throws Exception {
 
         mushroomDao.delete(mushroom1);
+        em.flush();
 
         List<Mushroom> list  = em.createQuery("select m from Mushroom m", Mushroom.class).getResultList();
 
@@ -160,7 +161,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         List<Mushroom> list = mushroomDao.findAll();
 
-        assertThat(list).hasSize(2);
+        assertThat(list).containsExactlyInAnyOrder(mushroom1,mushroom2);
     }
 
     @Test
@@ -168,7 +169,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         Mushroom mushroom = mushroomDao.findByName(mushroom1.getName());
         assertThat(mushroom).isNotNull();
-        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+        assertThat(mushroom).isEqualTo(mushroom1);
     }
 
     @Test
@@ -190,13 +191,13 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void findByMushroomType() throws Exception {
         List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.EDIBLE);
-        assertThat(list).hasSize(1);
+        assertThat(list).containsExactlyInAnyOrder(mushroom2);
     }
 
     @Test
     public void findByMushroomType_empty() throws Exception {
         List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.UNEDIBLE);
-        assertThat(list).hasSize(0);
+        assertThat(list).isEmpty();
     }
 
     @Test
@@ -207,7 +208,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         Mushroom mushroom  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
 
-        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+        assertThat(mushroom).isEqualTo(mushroom1);
     }
 
     @Test
@@ -219,7 +220,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         Mushroom mush  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
 
-        assertThat(mush).isEqualToComparingFieldByField(mushroom);
+        assertThat(mush).isEqualTo(mushroom);
     }
 
     @Test
@@ -254,7 +255,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         List<Mushroom> list = mushroomDao.findByIntervalOfOccurrence("June","July");
 
-        assertThat(list).hasSize(1);
+        assertThat(list).containsExactlyInAnyOrder(mushroom1);
     }
 
 }
