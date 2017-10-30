@@ -29,7 +29,6 @@ import static org.assertj.core.api.Assertions.*;
  */
 @ContextConfiguration(classes= PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional
 public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
