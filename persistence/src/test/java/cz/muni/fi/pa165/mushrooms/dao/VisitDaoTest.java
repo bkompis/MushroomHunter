@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -69,12 +70,12 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         visit1 = new Visit();
         visit1.setHunter(mushroomHunter1);
         visit1.setForest(forest1);
-        visit1.setDate(LocalDate.of(2017,10,25));
+        visit1.setDate(LocalDate.of(2017, 10, 25));
 
         visit2 = new Visit();
         visit2.setHunter(mushroomHunter2);
         visit2.setForest(forest2);
-        visit2.setDate(LocalDate.of(2017,10,30));
+        visit2.setDate(LocalDate.of(2017, 10, 30));
 
         em.persist(forest1);
         em.persist(forest2);
@@ -92,16 +93,9 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
 
     @Test
     public void create_visitWithNullHunter() throws Exception {
-        Forest testForest = new Forest();
-        testForest.setName("Test Forest");
-
-        em.persist(testForest);
-
         Visit testVisit = new Visit();
         testVisit.setHunter(null);
-        testVisit.setForest(testForest);
-        testVisit.setDate(LocalDate.of(2017,2,5));
-        testVisit.setNote("note for the forest");
+        testVisit.setForest(forest1);
 
         assertThatThrownBy(() -> visitDao.create(testVisit)).isInstanceOf(ConstraintViolationException.class);
     }
@@ -118,7 +112,7 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         Visit testVisit = new Visit();
         testVisit.setHunter(testHunter);
         testVisit.setForest(null);
-        testVisit.setDate(LocalDate.of(2017,2,5));
+        testVisit.setDate(LocalDate.of(2017, 2, 5));
         testVisit.setNote("note for the forest");
 
         assertThatThrownBy(() -> visitDao.create(testVisit)).isInstanceOf(ConstraintViolationException.class);
@@ -142,7 +136,7 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         Visit testVisit = new Visit();
         testVisit.setHunter(testHunter);
         testVisit.setForest(testForest);
-        testVisit.setDate(LocalDate.of(2017,2,5));
+        testVisit.setDate(LocalDate.of(2017, 2, 5));
         testVisit.setNote("blabla");
 
         em.persist(testVisit);
@@ -174,7 +168,7 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
 
     @Test
     public void update_validVisitDate() {
-        LocalDate newDate = LocalDate.of(2017,5,12);
+        LocalDate newDate = LocalDate.of(2017, 5, 12);
         Visit foundVisit = em.find(Visit.class, visit1.getId());
 
         foundVisit.setDate(newDate);
@@ -185,98 +179,15 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
     }
 
     @Test
-    public void update_validVisitForestName() {
-        String forestNewName = "Sexy forest";
-        Forest foudForest = em.find(Forest.class, forest1.getId());
-        Visit foundVisit = em.find(Visit.class, visit1.getId());
-
-        foudForest.setName(forestNewName);
-
-        foundVisit.setForest(foudForest);
-        visitDao.update(foundVisit);
-        em.flush();
-
-        assertThat(em.find(Visit.class, visit1.getId()).getForest().getName()).isEqualTo(forestNewName);
-    }
-
-    @Test
-    public void update_validVisitForestDescription() {
-        String forestNewDescription = "Dark and hard to find anything";
-        Forest foundForest = em.find(Forest.class, forest1.getId());
-        Visit foundVisit = em.find(Visit.class, visit1.getId());
-
-        foundForest.setDescription(forestNewDescription);
-
-        foundVisit.setForest(foundForest);
-        visitDao.update(foundVisit);
-        em.flush();
-
-        assertThat(em.find(Visit.class, visit1.getId()).getForest().getDescription()).isEqualTo(forestNewDescription);
-    }
-
-    @Test
-    public void update_validVisitHunterName() {
-        String hunterNewName = "Harry";
-        MushroomHunter foudHunter = em.find(MushroomHunter.class, mushroomHunter1.getId());
-        Visit foundVisit = em.find(Visit.class, visit1.getId());
-
-        foudHunter.setFirstName(hunterNewName);
-
-        foundVisit.setHunter(foudHunter);
-        visitDao.update(foundVisit);
-        em.flush();
-
-        assertThat(em.find(Visit.class, visit1.getId()).getHunter().getFirstName()).isEqualTo(hunterNewName);
-    }
-
-    @Test
-    public void update_validVisitHunterSurname() {
-        String hunterNewSurname = "Potter";
-        MushroomHunter foudHunter = em.find(MushroomHunter.class, mushroomHunter1.getId());
-        Visit foundVisit = em.find(Visit.class, visit1.getId());
-
-        foudHunter.setSurname(hunterNewSurname);
-
-        foundVisit.setHunter(foudHunter);
-        visitDao.update(foundVisit);
-        em.flush();
-
-        assertThat(em.find(Visit.class, visit1.getId()).getHunter().getSurname()).isEqualTo(hunterNewSurname);
-    }
-
-    @Test
-    public void update_validVisitHunterNickName() {
-        String hunterNickName = "The boy who survived";
-        MushroomHunter foudHunter = em.find(MushroomHunter.class, mushroomHunter1.getId());
-        Visit foundVisit = em.find(Visit.class, visit1.getId());
-
-        foudHunter.setUserNickname(hunterNickName);
-
-        foundVisit.setHunter(foudHunter);
-        visitDao.update(foundVisit);
-        em.flush();
-
-        assertThat(em.find(Visit.class, visit1.getId()).getHunter().getUserNickname()).isEqualTo(hunterNickName);
-    }
-
-
-    @Test
     public void update_nullVisit() {
-        assertThatThrownBy(() ->visitDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> visitDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void update_visitWithNullHunter() {
-        Forest testForest = new Forest();
-        testForest.setName("Test Forest");
-
-        em.persist(testForest);
-
         Visit testVisit = new Visit();
         testVisit.setHunter(null);
-        testVisit.setForest(testForest);
-        testVisit.setDate(LocalDate.of(2017,2,5));
-        testVisit.setNote("note for the forest");
+        testVisit.setForest(forest2);
 
         assertThatThrownBy(() -> visitDao.update(testVisit)).isInstanceOf(ConstraintViolationException.class);
     }
@@ -293,11 +204,16 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         Visit testVisit = new Visit();
         testVisit.setHunter(testHunter);
         testVisit.setForest(null);
-        testVisit.setDate(LocalDate.of(2017,2,5));
+        testVisit.setDate(LocalDate.of(2017, 2, 5));
         testVisit.setNote("note for the forest");
 
         assertThatThrownBy(() -> visitDao.update(testVisit)).isInstanceOf(ConstraintViolationException.class);
 
+    }
+
+    @Test
+    public void findAll_visits() throws Exception {
+        assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1, visit2);
     }
 
     @Test
@@ -333,18 +249,13 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         Visit testVisit = new Visit();
         testVisit.setHunter(testHunter);
         testVisit.setForest(testForest);
-        testVisit.setDate(LocalDate.of(2017,2,5));
+        testVisit.setDate(LocalDate.of(2017, 2, 5));
 
         visitDao.delete(testVisit);
         em.flush();
 
         assertThat(visitDao.findAll().size()).isEqualTo(sizeBeforeCreate);
-        assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1,visit2);
-    }
-
-    @Test
-    public void findAll_visits() throws Exception {
-        assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1,visit2);
+        assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1, visit2);
     }
 
     @Test
@@ -361,24 +272,31 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
 
     @Test
     public void findById_invalidId() throws Exception {
-        Long invalidID = new Long(64000);
+        Long invalidID = new Long(visit1.getId() + visit2.getId());
         Visit testVisit = visitDao.findById(invalidID);
         assertThat(testVisit).isNull();
     }
 
     @Test
     public void findByDate_nullDateFrom() throws Exception {
-        assertThatThrownBy(() -> visitDao.findByDate(null,LocalDate.of(2017,10,25))).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> visitDao.findByDate(null, LocalDate.of(2017, 10, 25))).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void findByDate_nullDateTo() throws Exception {
-        assertThatThrownBy(() -> visitDao.findByDate(LocalDate.of(2017,10,25),null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> visitDao.findByDate(LocalDate.of(2017, 10, 25), null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
 
-    @Test
-    public void findByDate_validDate() throws Exception {
-        //I need help, my brain is dead by now
-    }
+//    @Test
+//    public void findByDate_validDate() throws Exception {
+//        LocalDate firstDate = visit1.getDate();
+//        LocalDate secondDate = visit2.getDate();
+//        LocalDate newDate1 = firstDate.minusMonths(1);
+//        LocalDate nexDate2 = secondDate.plusMonths(1);
+//
+//        Visit testVisit = visitDao.findByDate(newDate1, nexDate2);
+//        assertThat(testVisit).isNotNull();
+//        assertThat(testVisit).containsExactlyInAnyOrder(visit1, visit2);
+//    }
 }
