@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.PersistenceUnit;
+import javax.validation.ConstraintViolationException;
 
 import java.util.Date;
 import java.util.List;
@@ -49,17 +51,17 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         mushroom2 = createMushroom("champignon", MushroomType.EDIBLE,"May","September");
 
         // persist mushrooms
-        em.getTransaction().begin();
+        //em.getTransaction().begin();
         em.persist(mushroom1);
         em.persist(mushroom2);
-        em.getTransaction().commit();
+        //em.getTransaction().commit();
     }
 
     private static Mushroom createMushroom(String name, MushroomType type, String beginMonth,String endMonth){
         Mushroom mushroom = new Mushroom();
         mushroom.setName(name);
         mushroom.setType(type);
-        mushroom.setIntervalOfOccurence(beginMonth,endMonth);
+        mushroom.setIntervalOfOccurrence(beginMonth,endMonth);
         return mushroom;
     }
 
@@ -77,14 +79,55 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void findById_nullId() throws Exception {
+        assertThatThrownBy(() -> mushroomDao.findById(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void create() throws Exception {
         Mushroom mushroom = createMushroom("WierdMushroom", MushroomType.UNEDIBLE, "May", "July");
         mushroomDao.create(mushroom);
 
-        Mushroom mush = em.find(Mushroom.class,em.contains(mushroom)? mushroom : em.merge(mushroom));
+        List<Mushroom> list = em.createQuery("select m from Mushroom m", Mushroom.class)
+                .getResultList();
 
-        assertThat(mush).isEqualToComparingFieldByField(mushroom);
+        assertThat(list).containsExactlyInAnyOrder(mushroom1,mushroom2,mushroom);
 
+    }
+
+    @Test
+    public void create_nullName() throws Exception {
+        Mushroom mushroom = createMushroom(null, MushroomType.UNEDIBLE, "May", "July");
+
+        assertThatThrownBy(() -> mushroomDao.create(mushroom)).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void create_nullMushroomType() throws Exception {
+        Mushroom mushroom = createMushroom("WierdMushroom", null, "May", "July");
+
+        assertThatThrownBy(() -> mushroomDao.create(mushroom)).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    //this string validation is not implemented yet - tests prepared for the future
+//    @Test
+//    public void create_nullBeginMonth() throws Exception {
+//        Mushroom mushroom = createMushroom("WierdMushroom", MushroomType.UNEDIBLE, null, "July");
+//
+//        assertThatThrownBy(() -> mushroomDao.create(mushroom)).isInstanceOf(ConstraintViolationException.class);
+//    }
+//
+//    @Test
+//    public void create_nullLastMonth() throws Exception {
+//        Mushroom mushroom = createMushroom("WierdMushroom", MushroomType.UNEDIBLE, "June", null);
+//
+//        assertThatThrownBy(() -> mushroomDao.create(mushroom)).isInstanceOf(ConstraintViolationException.class);
+//    }
+
+    @Test
+    public void create_nullEntity() throws Exception {
+
+        assertThatThrownBy(() -> mushroomDao.create(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -92,12 +135,25 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         mushroomDao.delete(mushroom1);
 
-        em.getTransaction().begin();
+        //em.getTransaction().begin();
         List<Mushroom> list  = em.createQuery("select m from Mushroom m", Mushroom.class).getResultList();
-        em.getTransaction().commit();
+        //em.getTransaction().commit();
 
         assertThat(list).hasSize(1);
 
+    }
+
+    @Test
+    public void delete_entityNotPersisted() throws Exception {
+        Mushroom mush = createMushroom("mush", MushroomType.UNEDIBLE, "May","June");
+        mushroomDao.delete(mush); // should not do anything
+        em.flush();
+        assertThat(mushroomDao.findAll()).containsExactlyInAnyOrder(mushroom1, mushroom2);
+    }
+
+    @Test
+    public void delete_nullEntity() throws Exception {
+        assertThatThrownBy(() -> mushroomDao.delete(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -124,6 +180,13 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void findByName_nullName() throws Exception {
+
+        assertThatThrownBy(() -> mushroomDao.findByName(null))
+                .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void findByMushroomType() throws Exception {
         List<Mushroom> list = mushroomDao.findByMushroomType(MushroomType.EDIBLE);
         assertThat(list).hasSize(1);
@@ -139,22 +202,57 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     public void update() throws Exception {
         mushroom1.setType(MushroomType.EDIBLE);
         mushroomDao.update(mushroom1);
+        em.flush();
 
-        Mushroom mushroom  = em.createQuery("select m from Mushroom m where m.name = name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
+        Mushroom mushroom  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
 
         assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+    }
 
+    @Test
+    public void update_validManaged() throws Exception {
+        Mushroom mushroom = mushroomDao.findById(mushroom1.getId());
+        mushroom.setType(MushroomType.EDIBLE);
+        mushroomDao.update(mushroom);
+        em.flush();
+
+        Mushroom mush  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
+
+        assertThat(mush).isEqualToComparingFieldByField(mushroom);
+    }
+
+    @Test
+    public void update_nullName() throws Exception{
+        mushroom1.setName(null);
+        mushroomDao.update(mushroom1);
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void update_duplicateName() throws Exception{
+        mushroom1.setName(mushroom2.getName());
+        mushroomDao.update(mushroom1);
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(PersistenceException.class);
+    }
+
+    @Test
+    public void update_nullType() throws Exception {
+        mushroom1.setType(null);
+        mushroomDao.update(mushroom1);
+        assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void update_nullEntity() throws Exception {
+        assertThatThrownBy(() -> mushroomDao.update(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void findByIntervaOfOccurence() throws Exception {
 
-        Date begin = new Date(1496275200);
-        Date end = new Date(1498867200);
+        List<Mushroom> list = mushroomDao.findByIntervalOfOccurrence("June","July");
 
-        Mushroom mushroom = mushroomDao.findByIntervalOfOccurrence(begin,end);
-
-        assertThat(mushroom).isEqualToComparingFieldByField(mushroom1);
+        assertThat(list).hasSize(1);
     }
 
 
