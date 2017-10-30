@@ -24,29 +24,29 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findAll() {
-        return em.createQuery("select c from MushroomHunter c", MushroomHunter.class)
+        return em.createQuery("select mh from MushroomHunter mh", MushroomHunter.class)
                 .getResultList();
     }
 
     @Override
-    public void create(MushroomHunter c) {
-        if (c == null) {
+    public void create(MushroomHunter mh) {
+        if (mh == null) {
             throw new IllegalArgumentException("Null mushroom hunter at create.");
         }
-        em.persist(c);
+        em.persist(mh);
     }
 
     @Override
-    public void delete(MushroomHunter c) {
-        em.remove(em.contains(c) ? c : em.merge(c));
+    public void delete(MushroomHunter mh) {
+        em.remove(em.contains(mh) ? mh : em.merge(mh));
     }
 
     @Override
-    public void update(MushroomHunter c) {
-        if (c == null) {
+    public void update(MushroomHunter mh) {
+        if (mh == null) {
             throw new IllegalArgumentException("Null mushroom hunter at update.");
         }
-        em.merge(c);
+        em.merge(mh);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
         try {
             return em
-                    .createQuery("select c from MushroomHunter c where c.firstName = :firstName",
+                    .createQuery("select mh from MushroomHunter mh where mh.firstName = :firstName",
                             MushroomHunter.class).setParameter("firstName", firstName)
                     .getResultList();
         } catch (NoResultException nrf) {
@@ -72,7 +72,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
         }
         try {
             return em
-                    .createQuery("select c from MushroomHunter c where c.surname = :surname",
+                    .createQuery("select mh from MushroomHunter mh where mh.surname = :surname",
                             MushroomHunter.class).setParameter("surname", surname)
                     .getResultList();
         } catch (NoResultException nrf) {
@@ -86,7 +86,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
             throw new IllegalArgumentException("user nickname is null");
         }
         try {
-            return em.createQuery("select c from MushroomHunter c where c.userNickname like :userNickname", MushroomHunter.class)
+            return em.createQuery("select mh from MushroomHunter mh where mh.userNickname like :userNickname", MushroomHunter.class)
                     .setParameter("userNickname", "%" + userNickname + "%").getResultList();
         } catch (NoResultException e) {
             return null;
