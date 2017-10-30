@@ -71,5 +71,5 @@ public interface MushroomDao {
      * @param toMonth   name of the month, non-null
      * @return List of Mushroom within given range, empty List if no Mushroom is found
      */
-    public Mushroom findByIntervalOfOccurrence(Date fromMonth, Date toMonth);
+    public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth);
 }
