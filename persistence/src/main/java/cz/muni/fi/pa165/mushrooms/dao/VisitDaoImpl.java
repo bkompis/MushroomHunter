@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @author bkompis
  */
+@Repository
 public class VisitDaoImpl implements VisitDao {
     @PersistenceContext
     private EntityManager em;
