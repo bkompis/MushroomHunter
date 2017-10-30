@@ -295,7 +295,7 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
 //        LocalDate newDate1 = firstDate.minusMonths(1);
 //        LocalDate nexDate2 = secondDate.plusMonths(1);
 //
-//        Visit testVisit = visitDao.findByDate(newDate1, nexDate2);
+//        List<Visit> testVisit = visitDao.findByDate(newDate1, nexDate2);
 //        assertThat(testVisit).isNotNull();
 //        assertThat(testVisit).containsExactlyInAnyOrder(visit1, visit2);
 //    }
