@@ -76,6 +76,7 @@ public class VisitDaoImpl implements VisitDao {
         } catch (NoResultException e) {
             return null;
         }
+
     }
 
 }
