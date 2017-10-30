@@ -21,6 +21,7 @@ import javax.persistence.PersistenceUnit;
 import javax.validation.ConstraintViolationException;
 
 import java.util.Date;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -51,10 +52,9 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         mushroom2 = createMushroom("champignon", MushroomType.EDIBLE,"May","September");
 
         // persist mushrooms
-        //em.getTransaction().begin();
+
         em.persist(mushroom1);
         em.persist(mushroom2);
-        //em.getTransaction().commit();
     }
 
     private static Mushroom createMushroom(String name, MushroomType type, String beginMonth,String endMonth){
@@ -62,6 +62,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         mushroom.setName(name);
         mushroom.setType(type);
         mushroom.setIntervalOfOccurrence(beginMonth,endMonth);
+
         return mushroom;
     }
 
@@ -135,9 +136,7 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
 
         mushroomDao.delete(mushroom1);
 
-        //em.getTransaction().begin();
         List<Mushroom> list  = em.createQuery("select m from Mushroom m", Mushroom.class).getResultList();
-        //em.getTransaction().commit();
 
         assertThat(list).hasSize(1);
 
@@ -179,12 +178,14 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
         assertThat(mushroom).isNull();
     }
 
+
     @Test
     public void findByName_nullName() throws Exception {
 
         assertThatThrownBy(() -> mushroomDao.findByName(null))
                 .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
+
 
     @Test
     public void findByMushroomType() throws Exception {
@@ -250,10 +251,10 @@ public class MushroomDaoTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void findByIntervaOfOccurence() throws Exception {
 
+
         List<Mushroom> list = mushroomDao.findByIntervalOfOccurrence("June","July");
 
         assertThat(list).hasSize(1);
     }
-
 
 }
