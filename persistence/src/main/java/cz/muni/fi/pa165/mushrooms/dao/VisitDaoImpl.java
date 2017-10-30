@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- *
  * @author bkompis
  */
 @Repository
@@ -24,7 +23,7 @@ public class VisitDaoImpl implements VisitDao {
 
     @Override
     public void create(Visit visit) {
-        if (visit == null){
+        if (visit == null) {
             throw new IllegalArgumentException("Null visit at create.");
         }
         em.persist(visit);
@@ -37,7 +36,7 @@ public class VisitDaoImpl implements VisitDao {
 
     @Override
     public void update(Visit visit) {
-        if (visit == null){
+        if (visit == null) {
             throw new IllegalArgumentException("Null visit at update.");
         }
         em.merge(visit);
@@ -56,7 +55,7 @@ public class VisitDaoImpl implements VisitDao {
 
     @Override
     public List<Visit> findByDate(LocalDate from, LocalDate to) {
-        if(from == null) {
+        if (from == null) {
             throw new IllegalArgumentException("'from' date null");
         }
         if (to == null) {
@@ -66,6 +65,7 @@ public class VisitDaoImpl implements VisitDao {
         LocalDateAttributeConverter converter = new LocalDateAttributeConverter();
         Date beginDate = converter.convertToDatabaseColumn(from);
         Date endDate = converter.convertToDatabaseColumn(to);
+
         try {
             // see https://stackoverflow.com/questions/957394/
             TypedQuery<Visit> query = em.createQuery(

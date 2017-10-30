@@ -15,24 +15,25 @@ public interface MushroomHunterDao {
      * @param id of Forest object, non-null
      * @return Forest entity if found, null otherwise
      */
-    public MushroomHunter findById(Long id);
+    MushroomHunter findById(Long id);
 
     /**
      * Stores the MushroomHunter entity into persistent database
      *
      * @param mh MushroomHunter object
      */
-    public void create(MushroomHunter mh);
+    void create(MushroomHunter mh);
 
     /**
      * Deletes the MushroomHunter entry from persistent database
      *
      * @param mh MushroomHunter object
      */
-    public void delete(MushroomHunter mh);
+    void delete(MushroomHunter mh);
 
     /**
      * Update a visit in the database with new values.
+     *
      * @param mh MushroomHunter object to update
      */
     void update(MushroomHunter mh);
@@ -40,27 +41,27 @@ public interface MushroomHunterDao {
     /**
      * Returns the list of all MushroomHunter entities stored in database
      */
-    public List<MushroomHunter> findAll();
+    List<MushroomHunter> findAll();
 
     /**
      * Returns the list all MushroomHunter entities with given first name
      *
      * @param firstName String object, search criteria for MushroomHunter entity
      */
-    public List<MushroomHunter> findByFirstName(String firstName);
+    List<MushroomHunter> findByFirstName(String firstName);
 
     /**
      * Returns the list all MushroomHunter entities with given surname
      *
      * @param surname String object, search criteria for MushroomHunter entity
      */
-    public List<MushroomHunter> findBySurname(String surname);
+    List<MushroomHunter> findBySurname(String surname);
 
     /**
      * Returns the list all MushroomHunter entities with given nickname
      *
      * @param userNickname String object, search criteria for MushroomHunter entity
      */
-    public List<MushroomHunter> findByNickame(String userNickname);
+    List<MushroomHunter> findByNickame(String userNickname);
 }
 

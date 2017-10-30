@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- *
  * @author lindar84
  */
 @Repository
@@ -25,7 +24,7 @@ public class ForestDaoImpl implements ForestDao {
 
     @Override
     public void create(Forest forest) {
-        if (forest == null){
+        if (forest == null) {
             throw new IllegalArgumentException("Null forest at create.");
         }
         em.persist(forest);
@@ -33,7 +32,7 @@ public class ForestDaoImpl implements ForestDao {
 
     @Override
     public void update(Forest forest) {
-        if (forest == null){
+        if (forest == null) {
             throw new IllegalArgumentException("Null forest at update.");
         }
         em.merge(forest);
@@ -51,13 +50,13 @@ public class ForestDaoImpl implements ForestDao {
 
     @Override
     public Forest findByName(String name) {
-        if(name == null) {
+        if (name == null) {
             throw new IllegalArgumentException("name is null");
         }
         try {
             return em.createQuery("select f from Forest f where f.name like :name", Forest.class)
-                    .setParameter("name", "%"+name+"%").getSingleResult();
-        }catch (NoResultException e){
+                    .setParameter("name", "%" + name + "%").getSingleResult();
+        } catch (NoResultException e) {
             return null;
         }
     }

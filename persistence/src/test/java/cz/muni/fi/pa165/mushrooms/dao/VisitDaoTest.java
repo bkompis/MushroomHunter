@@ -1,7 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
-import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
@@ -17,9 +16,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * @author BohdanCvejn
  */
-
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
@@ -70,12 +67,12 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
         visit1 = new Visit();
         visit1.setHunter(mushroomHunter1);
         visit1.setForest(forest1);
-        visit1.setDate(LocalDate.of(2017, 10, 25));
+        visit1.setDate(LocalDate.of(2017, Month.OCTOBER, 25));
 
         visit2 = new Visit();
         visit2.setHunter(mushroomHunter2);
         visit2.setForest(forest2);
-        visit2.setDate(LocalDate.of(2017, 10, 30));
+        visit2.setDate(LocalDate.of(2017, Month.OCTOBER, 30));
 
         em.persist(forest1);
         em.persist(forest2);

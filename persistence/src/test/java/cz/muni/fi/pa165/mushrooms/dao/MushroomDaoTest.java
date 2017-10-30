@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
-
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
@@ -11,14 +10,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-
-import java.util.Date;
 
 import java.util.List;
 
@@ -27,7 +23,7 @@ import static org.assertj.core.api.Assertions.*;
 /**
  * @author bencikpeter
  */
-@ContextConfiguration(classes= PersistenceSampleApplicationContext.class)
+@ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
@@ -38,15 +34,14 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
     private EntityManager em;
 
 
-
     private Mushroom mushroom1;
     private Mushroom mushroom2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // create mushrooms
-        mushroom1 = createMushroom("toadstool", MushroomType.POISONOUS,"June","July");
-        mushroom2 = createMushroom("champignon", MushroomType.EDIBLE,"May","September");
+        mushroom1 = createMushroom("toadstool", MushroomType.POISONOUS, "June", "July");
+        mushroom2 = createMushroom("champignon", MushroomType.EDIBLE, "May", "September");
 
         // persist mushrooms
 
@@ -56,11 +51,11 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
         em.flush();
     }
 
-    private static Mushroom createMushroom(String name, MushroomType type, String beginMonth,String endMonth){
+    private static Mushroom createMushroom(String name, MushroomType type, String beginMonth, String endMonth) {
         Mushroom mushroom = new Mushroom();
         mushroom.setName(name);
         mushroom.setType(type);
-        mushroom.setIntervalOfOccurrence(beginMonth,endMonth);
+        mushroom.setIntervalOfOccurrence(beginMonth, endMonth);
 
         return mushroom;
     }
@@ -74,7 +69,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
 
     @Test
     public void findById_invalidId() throws Exception {
-        Mushroom mushroom = mushroomDao.findById(mushroom1.getId()+mushroom2.getId());
+        Mushroom mushroom = mushroomDao.findById(mushroom1.getId() + mushroom2.getId());
         assertThat(mushroom).isNull();
     }
 
@@ -91,7 +86,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
         List<Mushroom> list = em.createQuery("select m from Mushroom m", Mushroom.class)
                 .getResultList();
 
-        assertThat(list).containsExactlyInAnyOrder(mushroom1,mushroom2,mushroom);
+        assertThat(list).containsExactlyInAnyOrder(mushroom1, mushroom2, mushroom);
 
     }
 
@@ -136,7 +131,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
         mushroomDao.delete(mushroom1);
         em.flush();
 
-        List<Mushroom> list  = em.createQuery("select m from Mushroom m", Mushroom.class).getResultList();
+        List<Mushroom> list = em.createQuery("select m from Mushroom m", Mushroom.class).getResultList();
 
         assertThat(list).hasSize(1);
 
@@ -144,7 +139,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
 
     @Test
     public void delete_entityNotPersisted() throws Exception {
-        Mushroom mush = createMushroom("mush", MushroomType.UNEDIBLE, "May","June");
+        Mushroom mush = createMushroom("mush", MushroomType.UNEDIBLE, "May", "June");
         mushroomDao.delete(mush); // should not do anything
         em.flush();
         assertThat(mushroomDao.findAll()).containsExactlyInAnyOrder(mushroom1, mushroom2);
@@ -160,7 +155,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
 
         List<Mushroom> list = mushroomDao.findAll();
 
-        assertThat(list).containsExactlyInAnyOrder(mushroom1,mushroom2);
+        assertThat(list).containsExactlyInAnyOrder(mushroom1, mushroom2);
     }
 
     @Test
@@ -205,7 +200,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
         mushroomDao.update(mushroom1);
         em.flush();
 
-        Mushroom mushroom  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
+        Mushroom mushroom = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name", mushroom1.getName()).getSingleResult();
 
         assertThat(mushroom).isEqualTo(mushroom1);
     }
@@ -217,20 +212,20 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
         mushroomDao.update(mushroom);
         em.flush();
 
-        Mushroom mush  = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name",mushroom1.getName()).getSingleResult();
+        Mushroom mush = em.createQuery("select m from Mushroom m where m.name = :name", Mushroom.class).setParameter("name", mushroom1.getName()).getSingleResult();
 
         assertThat(mush).isEqualTo(mushroom);
     }
 
     @Test
-    public void update_nullName() throws Exception{
+    public void update_nullName() throws Exception {
         mushroom1.setName(null);
         mushroomDao.update(mushroom1);
         assertThatThrownBy(() -> em.flush()).isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
-    public void update_duplicateName() throws Exception{
+    public void update_duplicateName() throws Exception {
         mushroom1.setName(mushroom2.getName());
         mushroomDao.update(mushroom1);
         assertThatThrownBy(() -> em.flush()).isInstanceOf(PersistenceException.class);
@@ -251,8 +246,7 @@ public class MushroomDaoTest extends AbstractTransactionalJUnit4SpringContextTes
     @Test
     public void findByIntervaOfOccurence() throws Exception {
 
-
-        List<Mushroom> list = mushroomDao.findByIntervalOfOccurrence("June","July");
+        List<Mushroom> list = mushroomDao.findByIntervalOfOccurrence("June", "July");
 
         assertThat(list).containsExactlyInAnyOrder(mushroom1);
     }
