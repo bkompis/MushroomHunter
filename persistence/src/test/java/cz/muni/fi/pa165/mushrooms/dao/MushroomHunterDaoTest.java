@@ -4,13 +4,13 @@ import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 public class MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-    @Autowired
+    @Inject
     private MushroomHunterDao mushroomHunterDao;
 
     @PersistenceContext
@@ -63,8 +63,7 @@ public class MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringCont
     @Test
     public void findById_validId() throws Exception {
         MushroomHunter hunter = mushroomHunterDao.findById(hunter1.getId());
-        assertThat(hunter).isNotNull();
-        assertThat(hunter).isEqualTo(hunter1);
+        assertThat(hunter).isNotNull().isEqualTo(hunter1);
     }
 
     @Test
