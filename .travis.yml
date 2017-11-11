@@ -7,7 +7,7 @@ install:
   - mvn clean install -DskipTests=true -B -V
 
 script:
-  mvn test -Phib-no-debug
+  mvn test -Phibernate-no-debug
 
 cache:
   directories:
