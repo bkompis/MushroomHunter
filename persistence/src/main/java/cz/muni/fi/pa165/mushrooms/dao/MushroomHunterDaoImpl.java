@@ -81,13 +81,13 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
     }
 
     @Override
-    public List<MushroomHunter> findByNickame(String userNickname) {
+    public MushroomHunter findByNickname(String userNickname) {
         if (userNickname == null) {
             throw new IllegalArgumentException("user nickname is null");
         }
         try {
             return em.createQuery("select mh from MushroomHunter mh where mh.userNickname like :userNickname", MushroomHunter.class)
-                    .setParameter("userNickname", "%" + userNickname + "%").getResultList();
+                    .setParameter("userNickname",  userNickname).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
