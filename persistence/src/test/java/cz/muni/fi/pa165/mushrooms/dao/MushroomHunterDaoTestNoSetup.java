@@ -45,6 +45,6 @@ public class MushroomHunterDaoTestNoSetup extends AbstractTransactionalJUnit4Spr
 
     @Test
     public void findByNickname() throws Exception {
-        assertThat(mushroomHunterDao.findByNickame("anything")).isEmpty();
+        assertThat(mushroomHunterDao.findByNickname("anything")).isNull();
     }
 }

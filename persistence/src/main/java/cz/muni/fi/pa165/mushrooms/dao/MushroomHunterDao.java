@@ -20,6 +20,7 @@ public interface MushroomHunterDao {
     /**
      * Stores the MushroomHunter entity into persistent database
      *
+     * @throws IllegalArgumentException on null mushroom entity given
      * @param mh MushroomHunter object
      */
     void create(MushroomHunter mh);
@@ -34,34 +35,43 @@ public interface MushroomHunterDao {
     /**
      * Update a visit in the database with new values.
      *
+     * @throws IllegalArgumentException on null mushroom entity given
      * @param mh MushroomHunter object to update
      */
     void update(MushroomHunter mh);
 
     /**
      * Returns the list of all MushroomHunter entities stored in database
+     *
+     * @return the list of all MushroomHunter entities stored in database
      */
     List<MushroomHunter> findAll();
 
     /**
      * Returns the list all MushroomHunter entities with given first name
      *
+     * @throws IllegalArgumentException on null first name given as an parameter
      * @param firstName String object, search criteria for MushroomHunter entity
+     * @return the list all MushroomHunter entities with given first name
      */
     List<MushroomHunter> findByFirstName(String firstName);
 
     /**
      * Returns the list all MushroomHunter entities with given surname
      *
+     * @throws IllegalArgumentException on null surname given as an parameter
      * @param surname String object, search criteria for MushroomHunter entity
+     * @return the list all MushroomHunter entities with given surname
      */
     List<MushroomHunter> findBySurname(String surname);
 
     /**
-     * Returns the list all MushroomHunter entities with given nickname
+     * Returns single MushroomHunter entity with given nickname
      *
+     * @throws IllegalArgumentException on null first nickname given as an parameter
      * @param userNickname String object, search criteria for MushroomHunter entity
+     * @return single MushroomHunter entity with given nickname
      */
-    List<MushroomHunter> findByNickame(String userNickname);
+    public MushroomHunter findByNickname(String userNickname);
 }
 
