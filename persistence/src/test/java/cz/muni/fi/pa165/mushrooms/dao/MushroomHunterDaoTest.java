@@ -120,19 +120,20 @@ public class MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringCont
 
     @Test
     public void findByNickname_valid() throws Exception {
-        List<MushroomHunter> found = mushroomHunterDao.findByNickame("Johnny");
-        assertThat(found).containsExactly(hunter1);
+        MushroomHunter found = mushroomHunterDao.findByNickname("Johnny");
+        assertThat(found).isNotNull();
+        assertThat(found).isEqualTo(hunter1);
     }
 
     @Test
     public void findByNickname_unknownNickname() throws Exception {
-        List<MushroomHunter> found = mushroomHunterDao.findByNickame("Nonexistent");
-        assertThat(found).isEmpty();
+        MushroomHunter found = mushroomHunterDao.findByNickname("Nonexistent");
+        assertThat(found).isNull();
     }
 
     @Test
     public void findByNickname_nullName() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.findByNickame(null))
+        assertThatThrownBy(() -> mushroomHunterDao.findByNickname(null))
                 .hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
