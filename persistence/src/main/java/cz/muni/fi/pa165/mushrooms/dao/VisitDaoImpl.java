@@ -61,17 +61,13 @@ public class VisitDaoImpl implements VisitDao {
         if (to == null) {
             throw new IllegalArgumentException("'to' date null");
         }
-        // convert input values to java.sql.Date
-        LocalDateAttributeConverter converter = new LocalDateAttributeConverter();
-        Date beginDate = converter.convertToDatabaseColumn(from);
-        Date endDate = converter.convertToDatabaseColumn(to);
 
         try {
             // see https://stackoverflow.com/questions/957394/
             TypedQuery<Visit> query = em.createQuery(
                     "SELECT v FROM Visit v WHERE v.date BETWEEN :beginDate AND :endDate", Visit.class)
-                    .setParameter("beginDate", beginDate, TemporalType.DATE)
-                    .setParameter("endDate", endDate, TemporalType.DATE);
+                    .setParameter("beginDate", from)
+                    .setParameter("endDate", to);
             return query.getResultList();
         } catch (NoResultException e) {
             return null;

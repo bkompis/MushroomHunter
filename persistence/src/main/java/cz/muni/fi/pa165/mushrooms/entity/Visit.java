@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.mushrooms.entity;
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -37,10 +37,12 @@ public class Visit {
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
-    // not of type LocalDate, caused problems in db queries
     @NotNull
     @Column(nullable = false)
-    private Date date;
+    @Convert(converter = LocalDateAttributeConverter.class)
+    //@Temporal(TemporalType.DATE) should not be used
+    // solution from https://www.thoughts-on-java.org/persist-localdate-localdatetime-jpa/
+    private LocalDate date;
 
     @Column
     private String note;
@@ -59,7 +61,7 @@ public class Visit {
     }
 
     public LocalDate getDate() {
-        return new LocalDateAttributeConverter().convertToEntityAttribute(date);
+        return date;
     }
 
     public String getNote() {
@@ -80,7 +82,7 @@ public class Visit {
     }
 
     public void setDate(LocalDate date) {
-        this.date = new LocalDateAttributeConverter().convertToDatabaseColumn(date);
+        this.date = date;
     }
 
     public void setNote(String note) {
