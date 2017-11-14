@@ -13,6 +13,8 @@
 
     <modules>
         <module>persistence</module>
+        <module>api</module>
+        <module>service</module>
     </modules>
 
     <dependencyManagement>
