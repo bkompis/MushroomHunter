@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 public class PersistenceSampleApplicationContext {
 
     /**
-     * Enables automatic translation of exceptions to DataAccessExceptions.
+     * Enables automatic translation of cz.muni.fi.pa165.mushrooms.exceptions to DataAccessExceptions.
      */
     @Bean
     public PersistenceExceptionTranslationPostProcessor postProcessor() {
