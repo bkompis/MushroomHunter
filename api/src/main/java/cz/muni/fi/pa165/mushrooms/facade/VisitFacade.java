@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface VisitFacade {
 
-    VisitDTO findById(String name);
+    VisitDTO findById(String id);
 
     void deleteVisit(VisitDTO visit);
 
