@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface ForestFacade {
 
-    ForestDTO findByName(String name);
+    ForestDTO findByName(String id);
 
     ForestDTO findById(String name);
 
