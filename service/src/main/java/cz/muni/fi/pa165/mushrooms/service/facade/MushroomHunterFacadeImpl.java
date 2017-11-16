@@ -1,14 +1,16 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterAuthenticateDTO;
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterCreateDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterUpdateDTO;
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterUpdatePasswordDTO;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomHunterFacade;
 
 import java.util.List;
 
 /**
- * TODO: create  javadoc
- *
- * @author Barbora Kompisova
+ * @author bkompis
  */
 public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
@@ -22,7 +24,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     }
 
     @Override
-    public void registerHunter(MushroomHunterDTO hunter, String unencryptedPassword) {
+    public void registerHunter(MushroomHunterCreateDTO hunter) {
 
     }
 
@@ -32,12 +34,12 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     }
 
     @Override
-    public void updateHunter(MushroomHunterDTO hunter) {
+    public void updateHunter(MushroomHunterUpdateDTO hunter) {
 
     }
 
     @Override
-    public void updatePassword(MushroomHunterDTO hunter, String oldUnencryptedPassword, String newUnencryptedPassword) {
+    public void updatePassword(MushroomHunterUpdatePasswordDTO hunter) {
 
     }
 
@@ -47,7 +49,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     }
 
     @Override
-    public boolean authenticate(MushroomHunterDTO u) {
+    public boolean authenticate(MushroomHunterAuthenticateDTO u) {
         return false;
     }
 
