@@ -34,12 +34,10 @@ public interface MushroomHunterFacade {
     /**
      * Try to authenticate a mushroomHunter. Return true only if the hashed password matches the records.
      */
-
     boolean authenticate(MushroomHunterDTO u);
 
     /**
      * Check if the given mushroom hunter has administrator privileges.
      */
     boolean isAdmin(MushroomHunterDTO u);
-
 }
