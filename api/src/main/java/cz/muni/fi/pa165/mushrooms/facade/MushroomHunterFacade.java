@@ -1,8 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.facade;
 
 import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
-
-
 import java.util.List;
 
 /**
@@ -26,7 +24,8 @@ public interface MushroomHunterFacade {
     void updateHunter(MushroomHunterDTO hunter);
 
     void updatePassword(MushroomHunterDTO hunter, String oldUnencryptedPassword,
-                                                    String newUnencryptedPassword);
+                        String newUnencryptedPassword);
+
     /**
      * Find all registered users
      */
