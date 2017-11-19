@@ -33,7 +33,7 @@ public class MushroomHunter {
     @Column(nullable = false)
     private String surname;
 
-    private boolean isAdmin;
+    private boolean admin;
 
     @NotNull
     @Column(nullable = false, unique = true)
@@ -75,11 +75,11 @@ public class MushroomHunter {
     }
 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public String getUserNickname() {
