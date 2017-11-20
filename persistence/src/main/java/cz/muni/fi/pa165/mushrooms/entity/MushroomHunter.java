@@ -42,6 +42,9 @@ public class MushroomHunter {
     @Column
     private String personalInfo;
 
+    @Column
+    private String passwordHash; //TODO: check interactions
+
     @OneToMany(mappedBy = "hunter")
     @Column(nullable = false)
     private Set<Visit> visits = new HashSet<>();
@@ -92,6 +95,14 @@ public class MushroomHunter {
 
     public Set<Visit> getVisits() {
         return Collections.unmodifiableSet(visits);
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     @Override

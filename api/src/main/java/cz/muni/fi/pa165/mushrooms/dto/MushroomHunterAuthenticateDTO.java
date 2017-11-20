@@ -6,17 +6,17 @@ package cz.muni.fi.pa165.mushrooms.dto;
  * @author bkompis
  */
 public class MushroomHunterAuthenticateDTO {
-    private Long userId;
+    private Long id;
     private String unencryptedPassword;
 
-    public Long getUserId()
+    public Long getId()
     {
-        return userId;
+        return id;
     }
 
-    public void setUserId(Long userId)
+    public void setId(Long id)
     {
-        this.userId = userId;
+        this.id = id;
     }
 
     public String getPassword()

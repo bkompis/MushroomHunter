@@ -12,62 +12,66 @@ import java.util.List;
  * @author bencikpeter, bohdancvejn, bkompis, Lindar84, Buvko
  */
 public interface MushroomHunterFacade {
+    /**
+     * Find all registered mushroom hunters.
+     *
+     * @return a list of all found hunters, empty list if none are found.
+     */
+    List<MushroomHunterDTO> findAllHunters();
+
     //TODO: constraints, exceptions in javadoc
     //TODO: missing equals()in DTOs?
+    // TODO: exception handling
     /**
-     * Find a MushroomHunter by id.
+     * Find a mushroom hunter by id.
      *
-     * @param userId the ID of the hunter
+     * @param hunterId the ID of the hunter, non-null
      * @return a MushroomHunterDTO object if found, null otherwise //TODO null?
      */
-    MushroomHunterDTO findHunterById(Long userId);
+    MushroomHunterDTO findHunterById(Long hunterId);
 
     /**
-     * Find a MushroomHunter by nickname.
+     * Find a mushroom hunter by nickname.
      *
-     * @param nickname the nickname to search by
+     * @param nickname the nickname to search by, non-null
      * @return a MushroomHunterDTO object if found, null otherwise //TODO null?
      */
     MushroomHunterDTO findHunterByNickname(String nickname);
 
     /**
-     * Register the MushroomHunter with the given unencrypted password.
+     * Register the mushroom hunter with the given unencrypted password.
      *
-     * @param hunter the MushroomHunter to register
+     * @param hunter the MushroomHunter to register, non-null
+     * @return the DTO object representing the new entity
      */
-    void registerHunter(MushroomHunterCreateDTO hunter);
+    MushroomHunterDTO registerHunter(MushroomHunterCreateDTO hunter);
 
     /**
-     * Delete the given MushroomHunter from the user database.
+     * Delete the given mushroom hunter from the user database.
      *
-     * @param hunter the hunter to delete
+     * @param id the id of the hunter to delete
+     * @return true if the user was successfully deleted
      */
-    //TODO: maybe use ID in delete
-    void deleteHunter(MushroomHunterDTO hunter);
+    boolean deleteHunter(Long id);
 
     /**
-     * Update a MushroomHunter's attributes.
+     * Update a mushroom hunter's attributes.
      *
      * @param hunter the hunter to update
+     * @return a DTO object containing the updated data
      */
-    void updateHunter(MushroomHunterUpdateDTO hunter);
+    MushroomHunterDTO updateHunter(MushroomHunterUpdateDTO hunter);
 
     /**
-     * Update a MushroomHunter's password.
+     * Update a mushroom hunter's password.
      *
      * @param hunter the hunter to update with the new password
+     * @return a DTO object containing the updated data
      */
-    void updatePassword(MushroomHunterUpdatePasswordDTO hunter);
+    MushroomHunterDTO updatePassword(MushroomHunterUpdatePasswordDTO hunter);
 
     /**
-     * Find all registered users
-     * @return a list of all found hunters
-     */
-    List<MushroomHunterDTO> findAllHunters();
-
-
-    /**
-     * Attempt to authenticate a MushroomHunter.
+     * Attempt to authenticate a mushroom hunter.
      *
      * @param hunter the hunter to authenticate
      * @return true if the authentication succeeded, false otherwise.
