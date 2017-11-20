@@ -49,12 +49,12 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     }
 
     @Override
-    public boolean authenticate(MushroomHunterAuthenticateDTO u) {
+    public boolean authenticate(MushroomHunterAuthenticateDTO hunter) {
         return false;
     }
 
     @Override
-    public boolean isAdmin(MushroomHunterDTO u) {
+    public boolean isAdmin(MushroomHunterDTO hunter) {
         return false;
     }
 }

@@ -61,7 +61,7 @@ public interface ForestFacade {
      * Takes an object of type Mushroom and returns list of Forests where you can find this mushroom.
      *
      * @param mushroom is a Mushroom for which you are looking for a forest
-     * @return List of all Forests with an occurence of the mushroom, empty List if there is any such Forest
+     * @return List of all Forests with an occurrence of the mushroom, empty List if there is any such Forest
      * @throws IllegalArgumentException on null Mushroom given as a parameter
      */
     List<ForestDTO> listAllForestWithMushroom(MushroomDTO mushroom); //complicated business function
