@@ -20,7 +20,7 @@ public interface VisitFacade {
      * @return Visit entity if found, null otherwise
      * @throws IllegalArgumentException on null id given as a parameter
      */
-    VisitDTO findById(String id);
+    VisitDTO findById(Long id);
 
     /**
      * Takes a Visit object to be deleted from the database.

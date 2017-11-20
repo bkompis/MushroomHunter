@@ -58,7 +58,7 @@ public interface MushroomHunterFacade {
      * @param hunter the hunter to update with the new password
      */
     void updatePassword(MushroomHunterUpdatePasswordDTO hunter);
-    
+
     /**
      * Find all registered users
      * @return a list of all found hunters
@@ -69,17 +69,17 @@ public interface MushroomHunterFacade {
     /**
      * Attempt to authenticate a MushroomHunter.
      *
-     * @param u the hunter to authenticate
+     * @param hunter the hunter to authenticate
      * @return true if the authentication succeeded, false otherwise.
      */
-    boolean authenticate(MushroomHunterAuthenticateDTO u);
+    boolean authenticate(MushroomHunterAuthenticateDTO hunter);
 
 
     /**
      * Check if the given mushroom hunter has administrator privileges.
      *
-     * @param u the MushroomHunter to check
+     * @param hunter the MushroomHunter to check
      * @return true if the hunter is an administrator, false otherwise
      */
-    boolean isAdmin(MushroomHunterDTO u);
+    boolean isAdmin(MushroomHunterDTO hunter);
 }

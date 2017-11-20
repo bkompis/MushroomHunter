@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class VisitFacadeImpl implements VisitFacade {
     @Override
-    public VisitDTO findById(String name) {
+    public VisitDTO findById(Long name) {
         return null;
     }
 
