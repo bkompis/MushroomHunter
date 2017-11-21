@@ -19,14 +19,11 @@ public interface MushroomHunterFacade {
      */
     List<MushroomHunterDTO> findAllHunters();
 
-    //TODO: constraints, exceptions in javadoc
-    //TODO: missing equals()in DTOs?
-    // TODO: exception handling
     /**
      * Find a mushroom hunter by id.
      *
      * @param hunterId the ID of the hunter, non-null
-     * @return a MushroomHunterDTO object if found, null otherwise //TODO null?
+     * @return a MushroomHunterDTO object if found, null otherwise
      */
     MushroomHunterDTO findHunterById(Long hunterId);
 
@@ -34,7 +31,7 @@ public interface MushroomHunterFacade {
      * Find a mushroom hunter by nickname.
      *
      * @param nickname the nickname to search by, non-null
-     * @return a MushroomHunterDTO object if found, null otherwise //TODO null?
+     * @return a MushroomHunterDTO object if found, null otherwise
      */
     MushroomHunterDTO findHunterByNickname(String nickname);
 

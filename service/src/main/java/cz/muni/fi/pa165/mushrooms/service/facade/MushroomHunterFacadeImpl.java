@@ -9,7 +9,6 @@ import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomHunterFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomHunterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +26,20 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Inject
     private MushroomHunterService service;
 
-    @Autowired
+    @Inject
     private BeanMappingService beanMappingService;
 
 
     @Override
     public MushroomHunterDTO findHunterById(Long hunterId) {
         MushroomHunter hunter = service.findHunterById(hunterId);
-        return (hunter == null) ? null : beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
+        System.err.println("service found for id=" + hunterId + " hunter " + hunter);
+        if (hunter == null){
+            return null;
+        }
+        MushroomHunterDTO mapped = beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
+        return mapped;
+        //return (hunter == null) ? null : beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
     }
 
     @Override
@@ -61,9 +66,9 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public boolean deleteHunter(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("Null id at hunter delete."); //TODO: ex throwing lower; DataAccessException
+            throw new IllegalArgumentException("Null id at hunter delete.");
         }
-        MushroomHunter hunter = beanMappingService.mapTo(findHunterById(id), MushroomHunter.class);
+        MushroomHunter hunter = service.findHunterById(id);
         service.deleteHunter(hunter);
         return true;
     }
@@ -71,7 +76,8 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public MushroomHunterDTO updateHunter(MushroomHunterUpdateDTO hunter) {
         //TODO: check Dozer behaviour
-        MushroomHunter entity = service.findHunterByNickname(hunter.getUserNickname());
+        MushroomHunter entity = service.findHunterById(hunter.getId());
+        System.err.println("service found:" + entity);
         entity.setSurname(hunter.getSurname());
         entity.setFirstName(hunter.getFirstName());
         entity.setUserNickname(hunter.getUserNickname());
@@ -79,8 +85,8 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
         entity.setAdmin(hunter.isAdmin());
 
         service.updateHunter(entity);
-
-        return findHunterByNickname(hunter.getUserNickname());
+        System.err.println("service updated to: " + entity);
+        return findHunterById(entity.getId());
     }
 
     @Override
