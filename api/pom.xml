@@ -12,9 +12,8 @@
     <artifactId>api</artifactId>
     <dependencies>
         <dependency>
-            <groupId>cz.muni.fi.pa165.mushrooms</groupId>
-            <artifactId>persistence</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
         </dependency>
     </dependencies>
 
