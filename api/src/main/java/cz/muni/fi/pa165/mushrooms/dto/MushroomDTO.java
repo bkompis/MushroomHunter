@@ -12,7 +12,7 @@ public class MushroomDTO {
     private Long id;
     private String name;
     private MushroomType type;
-    private String intervalOfOccurrence;
+    private String intervalOfOccurrence;    ///////// TODO String - Date
 
     public Long getId() {
         return id;

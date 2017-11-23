@@ -40,7 +40,7 @@ public interface MushroomFacade {
      * @param mushroomType non-null
      * @return List of Mushroom, empty List if no Mushroom is found
      */
-    MushroomDTO findByMushroomType(MushroomType mushroomType);
+    List<MushroomDTO> findByMushroomType(MushroomType mushroomType);
 
     /**
      * Takes interval of occurrence and returns all Mushrooms within given range
@@ -49,27 +49,28 @@ public interface MushroomFacade {
      * @param toMonth   name of the month, non-null
      * @return List of Mushroom within given range, empty List if no Mushroom is found
      */
-    MushroomDTO findByIntervalOfOccurrence(String fromMonth, String toMonth);
+    List<MushroomDTO> findByIntervalOfOccurrence(String fromMonth, String toMonth);   /////// TODO String - Date
 
     /**
      * Takes an object of type Mushroom and creates an entry in a database
      *
      * @param mushroom non-null object to be created in a database
      */
-    void createMushroom(MushroomDTO mushroom);
+    MushroomDTO createMushroom(MushroomDTO mushroom);
 
     /**
      * Takes a mushroom object that shall be deleted from database
      *
-     * @param mushroom non-null object to be deleted from the database
+     * @param id is non-null id of the mushroom to be deleted from the database
+     * @return true if the mushroom was successfully deleted
      */
-    void deleteMushroom(MushroomDTO mushroom);
+    boolean deleteMushroom(Long id);
 
     /**
      * Takes an object of type Mushroom and updates an entry in a database
      *
      * @param mushroom non-null object to be updated in a database
      */
-    void updateMushroom(MushroomDTO mushroom);
+    MushroomDTO updateMushroom(MushroomDTO mushroom);
 
 }
