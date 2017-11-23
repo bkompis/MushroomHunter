@@ -15,7 +15,7 @@ public class MushroomHunterDTO {
     private String firstName;
     private String surname;
     private String personalInfo;
-    private String passwordHash;
+    //private String passwordHash; // should not be here
     private boolean admin;
     private Set<VisitDTO> visits = new HashSet<>(); //TODO: check
     //TODO: add Visit relationships!
@@ -60,14 +60,14 @@ public class MushroomHunterDTO {
         this.personalInfo = personalInfo;
     }
 
-    public String getPasswordHash() {
+    /*public String getPasswordHash() {
         return passwordHash;
     }
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-
+*/
     public boolean isAdmin() {
         return admin;
     }
