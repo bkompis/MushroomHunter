@@ -42,9 +42,9 @@ import static org.assertj.core.api.Assertions.*;
 // TODO: more tests, + tests without mock (integration)
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class) // TODO: necessary?
-public class MushroomHunterFacadeImplTest_withMock extends AbstractTransactionalJUnit4SpringContextTests { //should be transactional?
+public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests { //should be transactional?
 
-    private final Logger logger = LoggerFactory.getLogger(MushroomHunterFacadeImplTest_withMock.class);
+    private final Logger logger = LoggerFactory.getLogger(withMock_MushroomHunterFacadeImplTest.class);
 
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
@@ -98,9 +98,7 @@ public class MushroomHunterFacadeImplTest_withMock extends AbstractTransactional
             service.findHunterById(anyLong);
             result = new Delegate() {
                 MushroomHunter foo(Long id) {
-                    System.err.println("looking for hunter with id " + id);
                     if (id.equals(1L)){
-                        System.err.println("returning hunter1");
                         return hunter1;
                     }
                     if (id.equals(2L)){

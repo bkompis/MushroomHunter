@@ -33,7 +33,6 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public MushroomHunterDTO findHunterById(Long hunterId) {
         MushroomHunter hunter = service.findHunterById(hunterId);
-        System.err.println("service found for id=" + hunterId + " hunter " + hunter);
         if (hunter == null){
             return null;
         }
@@ -77,7 +76,6 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     public MushroomHunterDTO updateHunter(MushroomHunterUpdateDTO hunter) {
         //TODO: check Dozer behaviour
         MushroomHunter entity = service.findHunterById(hunter.getId());
-        System.err.println("service found:" + entity);
         entity.setSurname(hunter.getSurname());
         entity.setFirstName(hunter.getFirstName());
         entity.setUserNickname(hunter.getUserNickname());
@@ -85,7 +83,6 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
         entity.setAdmin(hunter.isAdmin());
 
         service.updateHunter(entity);
-        System.err.println("service updated to: " + entity);
         return findHunterById(entity.getId());
     }
 
