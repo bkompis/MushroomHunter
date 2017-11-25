@@ -77,7 +77,7 @@ public class MushroomDaoImpl implements MushroomDao {
     }
 
     @Override
-    public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth) {
+    public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth) {    //// TODO String - Date
         if (fromMonth == null) {
             throw new IllegalArgumentException("Parameter fromMonth is null");
         }
