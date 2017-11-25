@@ -28,22 +28,23 @@ public interface ForestFacade {
      * @return Forest entity if found, null otherwise
      * @throws IllegalArgumentException on null id given as a parameter
      */
-    ForestDTO findById(String id);
+    ForestDTO findById(Long id);
 
     /**
-     * Takes an object of type Forest that shall be deleted from database.
+     * Deletes a forest with a given ID from database
      *
-     * @param forest is a Forest which you want to delete
+     * @param id of a Forest which you want to delete
      * @throws IllegalArgumentException on null Forest given as a parameter
      *      or if the forest given as a parameter doesn't exist in the database
      */
-    void deleteForest(ForestDTO forest);
+    void deleteForest(Long id);
 
     /**
      * Takes an object of type Forest and update this in a database.
      * You are not able to update an id of the forest.
      *
      * @param forest is a Forest to be updated in a database
+     *
      * @throws IllegalArgumentException on null forest given as a parameter
      *      or if the forest given as a parameter doesn't exist in the database
      */
@@ -64,6 +65,6 @@ public interface ForestFacade {
      * @return List of all Forests with an occurrence of the mushroom, empty List if there is any such Forest
      * @throws IllegalArgumentException on null Mushroom given as a parameter
      */
-    List<ForestDTO> listAllForestWithMushroom(MushroomDTO mushroom); //complicated business function
+    List<ForestDTO> listAllForestsWithMushroom(MushroomDTO mushroom); //complicated business function
 
 }
