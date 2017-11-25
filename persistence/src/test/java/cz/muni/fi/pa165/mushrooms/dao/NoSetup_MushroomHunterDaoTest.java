@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class MushroomHunterDaoTestNoSetup extends AbstractTransactionalJUnit4SpringContextTests {
+public class NoSetup_MushroomHunterDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Inject
     private MushroomHunterDao mushroomHunterDao;
 
