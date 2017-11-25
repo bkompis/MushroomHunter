@@ -9,6 +9,7 @@ import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
  */
 public class MushroomDTO {
 
+
     private Long id;
     private String name;
     private MushroomType type;
@@ -16,6 +17,10 @@ public class MushroomDTO {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
