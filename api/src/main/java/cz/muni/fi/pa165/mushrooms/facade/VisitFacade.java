@@ -1,8 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.facade;
 
-import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
-import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
-import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
+import cz.muni.fi.pa165.mushrooms.dto.*;
 
 import java.util.List;
 
@@ -23,13 +21,20 @@ public interface VisitFacade {
     VisitDTO findById(Long id);
 
     /**
-     * Takes a Visit object to be deleted from the database.
+     * Returns list of all visits.
      *
-     * @param visit is a Visit object
+     * @return List of all visits
+     */
+    List<VisitDTO> listAllVisits();
+
+    /**
+     * Takes a Visit object to be deleted from the database by it's id.
+     *
+     * @param id is primary key for a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
      *      or if the visit given as a parameter doesn't exist in the database
      */
-    void deleteVisit(VisitDTO visit);
+    void deleteVisit(Long id);
 
     /**
      * Takes a Visit object to be updated in the database.
@@ -46,7 +51,7 @@ public interface VisitFacade {
      * @param visit is a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
      */
-    void createVisit(VisitDTO visit);
+    VisitDTO createVisit(VisitCreateDTO visit);
 
     /**
      * Takes an object of type Forest and returns list of visits carried out in this forest.
@@ -68,9 +73,9 @@ public interface VisitFacade {
      * @throws IllegalArgumentException on null MushroomHunter given as a parameter
      *      or if the MushroomHunter given as a parameter doesn't exist in the database
      */
-    List<VisitDTO> listAllVisitsForMushromHunter(MushroomHunterDTO mushroomHunter);
+    List<VisitDTO> listAllVisitsForMushroomHunter(MushroomHunterDTO mushroomHunter);
 
 
-    //List<VisitDTO> listAllVisitsByMushroom(MushroomDTO mushroom);
+    List<VisitDTO> listAllVisitsByMushroom(MushroomDTO mushroom);
 
 }
