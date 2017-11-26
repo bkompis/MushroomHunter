@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class VisitFacadeImpl implements VisitFacade {
             return null;
         }
         VisitDTO mapped = beanMappingService.mapTo(visit, VisitDTO.class);
+        System.err.println(mapped);
         return mapped;
     }
 
@@ -53,7 +55,11 @@ public class VisitFacadeImpl implements VisitFacade {
         List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
 
         Visit newVisit = new Visit();
-        newVisit.setDate(visit.getDate());
+
+        System.err.println(visit.getDate());
+        System.err.println(LocalDate.parse(visit.getDate()));
+
+        newVisit.setDate(LocalDate.parse(visit.getDate()));
         newVisit.setForest(forest);
         newVisit.setHunter(hunter);
         newVisit.setMushrooms(mushrooms);

@@ -13,7 +13,7 @@ public class VisitDTO {
     private MushroomHunterDTO hunter;
     private ForestDTO forest;
     private List<MushroomDTO> mushrooms;
-    private LocalDate date;
+    private String date;
     private String note;
 
     public Long getId() {
@@ -40,13 +40,13 @@ public class VisitDTO {
         this.forest = forest;
     }
 
-//    public LocalDate getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(LocalDate date) {
-//        this.date = date;
-//    }
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getNote() {
         return note;
@@ -93,6 +93,7 @@ public class VisitDTO {
                 "hunter=" + hunter +
                 ", forest=" + forest +
                 ", mushrooms=" + mushrooms +
+                ", date='" + date + '\'' +
                 ", note='" + note + '\'' +
                 '}';
     }

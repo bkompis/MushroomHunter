@@ -136,7 +136,9 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
         visit1.setDate(LocalDate.now());
         visit1.setHunter(hunter1);
         visit1.setForest(forest1);
-        visit1.setMushrooms(new ArrayList<Mushroom>());
+        List<Mushroom> mushrooms = new ArrayList<Mushroom>();
+        mushrooms.add(mushroom1);
+        visit1.setMushrooms(mushrooms);
         Deencapsulation.setField(visit1, "id", 1L);
         visit1DTO = mapping.mapTo(visit1, VisitDTO.class);
 
