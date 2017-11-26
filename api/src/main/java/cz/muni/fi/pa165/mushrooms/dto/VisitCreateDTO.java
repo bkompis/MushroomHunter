@@ -15,7 +15,7 @@ public class VisitCreateDTO {
     @NotNull
     private ForestDTO forest;
     @NotNull
-    private LocalDate date;
+    private String date;
     private String note;
 
     private List<MushroomDTO> mushrooms;
@@ -52,11 +52,22 @@ public class VisitCreateDTO {
         this.mushrooms = mushrooms;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "VisitCreateDTO{" +
+                "hunter=" + hunter +
+                ", forest=" + forest +
+                ", date='" + date + '\'' +
+                ", note='" + note + '\'' +
+                ", mushrooms=" + mushrooms +
+                '}';
     }
 }
