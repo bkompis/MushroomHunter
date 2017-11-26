@@ -23,5 +23,7 @@ class TestUtils {
         return false;
     }
 
-
+    static Visit createVisit(){
+        return null;
+    }
 }
