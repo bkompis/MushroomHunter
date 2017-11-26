@@ -1,11 +1,11 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
-import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: create  javadoc
- *
- * @author Barbora Kompisova
+ * @author Buvko
  */
 @Service
 public class VisitServiceImpl implements VisitService {
@@ -25,37 +23,61 @@ public class VisitServiceImpl implements VisitService {
     private VisitDao visitDao;
 
     @Override
-    public Visit findVisitById(Long id) {
-        return visitDao.findById(id);
+    public Visit findVisitById(Long id) throws DataAccessException{
+        try {
+            return visitDao.findById(id);
+        } catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not find visit by id in the database - error.");
+        }
     }
 
     @Override
-    public List<Visit> findAllVisits() {
-        return visitDao.findAll();
+    public List<Visit> findAllVisits() throws DataAccessException{
+        try {
+            return visitDao.findAll();
+        } catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not find visits in the database - error.");
+        }
     }
 
     @Override
-    public List<Visit> findVisitByDate(LocalDate from, LocalDate to) {
-        return visitDao.findByDate(from, to);
+    public List<Visit> findVisitByDate(LocalDate from, LocalDate to) throws DataAccessException{
+        try {
+            return visitDao.findByDate(from, to);
+        } catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not find visit by date in the database - error.");
+        }
     }
 
     @Override
-    public void createVisit(Visit visit) {
-        visitDao.create(visit);
+    public void createVisit(Visit visit) throws DataAccessException{
+        try {
+            visitDao.create(visit);
+        }catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not create new visit - error.");
+        }
     }
 
     @Override
-    public void deleteVisit(Visit visit) {
-        visitDao.delete(visit);
+    public void deleteVisit(Visit visit) throws DataAccessException{
+        try {
+            visitDao.delete(visit);
+        } catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not delete visit - error.");
+        }
     }
 
     @Override
-    public void updateVisit(Visit visit) {
-        visitDao.update(visit);
+    public void updateVisit(Visit visit) throws DataAccessException{
+        try {
+            visitDao.update(visit);
+        }catch(Throwable e){
+            throw new MushroomHunterServiceDataAccessException("Could not update visit - error.");
+        }
     }
 
     @Override
-    public List<Visit> getVisitsByHunter(MushroomHunter mushroomHunter) {
+    public List<Visit> getVisitsByHunter(MushroomHunter mushroomHunter) throws DataAccessException{
         List<Visit> visitsByHunter = new ArrayList<>();
         List<Visit> visits = visitDao.findAll();
 
@@ -68,10 +90,10 @@ public class VisitServiceImpl implements VisitService {
     }
 
     @Override
-    public List<Visit> getVisitsByForest(Forest forest) {
+    public List<Visit> getVisitsByForest(Forest forest) throws DataAccessException{
 
         List<Visit> visitsByForest = new ArrayList<>();
-        List<Visit> visits = visitDao.findAll();
+        List<Visit> visits = findAllVisits(); // takes care of exceptions
 
         for (Visit v: visits) {
             if (v.getForest().equals(forest)){
@@ -82,10 +104,10 @@ public class VisitServiceImpl implements VisitService {
     }
 
     @Override
-    public List<Visit> getVisitsByMushroom(Mushroom mushroom) {
+    public List<Visit> getVisitsByMushroom(Mushroom mushroom) throws DataAccessException{
 
         List<Visit> visitsByMushroom = new ArrayList<>();
-        List<Visit> visits = visitDao.findAll();
+        List<Visit> visits = findAllVisits(); // takes care of exceptions
         List<Mushroom> mushrooms;
 
         for (Visit v: visits) {

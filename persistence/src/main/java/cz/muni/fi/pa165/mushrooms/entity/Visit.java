@@ -40,7 +40,7 @@ public class Visit {
     private Forest forest;
 
     @OneToMany
-    @JoinColumn(name = "visit_mushroom", nullable = true)
+    //@JoinColumn(name = "visit_mushroom", nullable = true) // join column on one to many? o.O
     private List<Mushroom> mushrooms;
 
     @NotNull
