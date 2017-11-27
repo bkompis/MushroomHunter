@@ -65,7 +65,12 @@ public class MushroomHunterServiceImpl implements MushroomHunterService {
 
     @Override
     public boolean authenticate(MushroomHunter hunter, String password) {
-        return validatePassword(password, hunter.getPasswordHash());
+        if (hunter == null) {
+            throw new MushroomHunterServiceDataAccessException("Null hunter at authenticate");
+        }
+        // fresh data
+        MushroomHunter entity = findHunterById(hunter.getId());
+        return validatePassword(password, entity.getPasswordHash());
     }
 
     @Override
