@@ -2,6 +2,9 @@ package cz.muni.fi.pa165.mushrooms.dto;
 
 import java.util.Objects;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * The basic DTO class for the Forest entity.
  *
@@ -10,6 +13,8 @@ import java.util.Objects;
 public class ForestDTO {
 
     private Long id;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String name;
     private String description;
 

@@ -1,5 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * TThe DTO object for updating user password.
  *
@@ -8,7 +11,11 @@ package cz.muni.fi.pa165.mushrooms.dto;
 public class MushroomHunterUpdatePasswordDTO {
     // TODO: constraints
     private Long id;
+    @NotNull
+    @Size(min = 8, max = 150)
     private String oldPassword;
+    @NotNull
+    @Size(min = 8, max = 150)
     private String newPassword;
 
     public Long getId() {

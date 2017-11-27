@@ -1,5 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * The DTO to be used at generic user update.
  *
@@ -7,8 +10,14 @@ package cz.muni.fi.pa165.mushrooms.dto;
  */
 public class MushroomHunterUpdateDTO {
     private Long id;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String firstName;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String surname;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String userNickname;
     private String personalInfo;
     private boolean admin;

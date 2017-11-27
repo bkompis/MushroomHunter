@@ -1,7 +1,9 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * The DTO to be used for Forest creation and update.
@@ -12,6 +14,7 @@ import java.util.Objects;
 public class AddEditForestDTO {
 
     @NotNull
+    @Size(min = 3, max = 50)
     private String name;
     private String description;
 
