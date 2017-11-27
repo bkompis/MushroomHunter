@@ -32,7 +32,7 @@ public class VisitFacadeImpl implements VisitFacade {
     @Override
     public VisitDTO findById(Long id) {
         Visit visit = service.findVisitById(id);
-        if (visit == null){
+        if (visit == null) {
             return null;
         }
         VisitDTO mapped = beanMappingService.mapTo(visit, VisitDTO.class);
@@ -47,7 +47,7 @@ public class VisitFacadeImpl implements VisitFacade {
 
     @Override
     public VisitDTO createVisit(VisitCreateDTO visit) {
-        if (visit == null){
+        if (visit == null) {
             throw new IllegalArgumentException("Null VisitDTO cannot be updated");
         }
         Forest forest = beanMappingService.mapTo(visit.getForest(), Forest.class);
@@ -81,10 +81,10 @@ public class VisitFacadeImpl implements VisitFacade {
 
     @Override
     public void updateVisit(VisitDTO visit) {
-        if (visit == null){
+        if (visit == null) {
             throw new IllegalArgumentException("Null VisitDTO cannot be updated");
         }
-        if ((visit.getHunter() == null) || (visit.getForest() == null)){
+        if ((visit.getHunter() == null) || (visit.getForest() == null)) {
             throw new IllegalArgumentException("Visit with null forestDTO or HunterDTO cannot be updated");
         }
 
@@ -93,7 +93,7 @@ public class VisitFacadeImpl implements VisitFacade {
         List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
 
         Visit entityVisit = service.findVisitById(visit.getId());
-        if (entityVisit == null){
+        if (entityVisit == null) {
             //TODO: react to it somehow
         }
 
@@ -133,7 +133,7 @@ public class VisitFacadeImpl implements VisitFacade {
         Mushroom newEntity = new Mushroom();
         newEntity.setName(mushroom.getName());
         newEntity.setType(mushroom.getType());
-        newEntity.setIntervalOfOccurrence(mushroom.getIntervalOfOccurrence(),"");
+        newEntity.setIntervalOfOccurrence(mushroom.getIntervalOfOccurrence(), "");
 
         return beanMappingService.mapTo(service.getVisitsByMushroom(newEntity), VisitDTO.class);
     }

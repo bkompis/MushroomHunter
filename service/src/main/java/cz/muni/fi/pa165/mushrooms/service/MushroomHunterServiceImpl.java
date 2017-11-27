@@ -1,15 +1,19 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
-import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
-import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
-import org.springframework.stereotype.Service;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.List;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.inject.Inject;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.List;
+
+import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
+import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
 
 /**
  * Implementation of business logic for MushroomHunter.
@@ -22,54 +26,86 @@ public class MushroomHunterServiceImpl implements MushroomHunterService {
     private MushroomHunterDao hunterDao;
 
     @Override
-    public MushroomHunter findHunterById(Long id){
-        return hunterDao.findById(id); //null if not found
-    }
-
-    @Override
-    public MushroomHunter findHunterByNickname(String nickname) {
-        return hunterDao.findByNickname(nickname);
-    }
-
-    @Override
-    public void registerHunter(MushroomHunter hunter, String password) {
-        hunter.setPasswordHash(createHash(password));
-        hunterDao.create(hunter);
-    }
-
-    @Override
-    public void deleteHunter(MushroomHunter hunter) {
-        hunterDao.delete(hunter);
-    }
-
-    @Override
-    public void updateHunter(MushroomHunter hunter) {
-        hunterDao.update(hunter);
-    }
-
-    @Override
-    public boolean updatePassword(MushroomHunter hunter, String oldPassword, String newPassword) {
-        MushroomHunter toUpdate = hunterDao.findById(hunter.getId());
-        if (validatePassword(oldPassword, toUpdate.getPasswordHash())){
-            toUpdate.setPasswordHash(createHash(newPassword));
-            hunterDao.update(toUpdate);
-            return true;
+    public List<MushroomHunter> findAllHunters() throws DataAccessException {
+        try {
+            return hunterDao.findAll();
+        } catch (Throwable e) {
+            throw new EntityFindServiceException("all hunters", e);
         }
-        return false; //TODO: exception wrapping
     }
 
     @Override
-    public List<MushroomHunter> findAllHunters() {
-        return hunterDao.findAll();
+    public MushroomHunter findHunterById(Long id) throws DataAccessException {
+        try {
+            return hunterDao.findById(id);
+        } catch (Throwable e) {
+            throw new EntityFindServiceException("hunter", "id", id, e);
+        }
     }
 
     @Override
-    public boolean authenticate(MushroomHunter hunter, String password) {
-        return validatePassword(password, hunter.getPasswordHash());
+    public MushroomHunter findHunterByNickname(String nickname) throws DataAccessException {
+        try {
+            return hunterDao.findByNickname(nickname);
+        } catch (Throwable e) {
+            throw new EntityFindServiceException("hunter", "nickname", nickname, e);
+        }
     }
 
     @Override
-    public boolean isAdmin(MushroomHunter hunter) {
+    public void registerHunter(MushroomHunter hunter, String password) throws DataAccessException {
+        try {
+            hunter.setPasswordHash(createHash(password));
+            hunterDao.create(hunter);
+        } catch (Throwable e) {
+            throw new EntityOperationServiceException("hunter", "register", hunter, e);
+        }
+    }
+
+    @Override
+    public void deleteHunter(MushroomHunter hunter) throws DataAccessException {
+        try {
+            hunterDao.delete(hunter);
+        } catch (Throwable e) {
+            throw new EntityOperationServiceException("hunter", "delete", hunter, e);
+        }
+    }
+
+    @Override
+    public void updateHunter(MushroomHunter hunter) throws DataAccessException {
+        try {
+            hunterDao.update(hunter);
+        } catch (Throwable e) {
+            throw new EntityOperationServiceException("hunter", "update", hunter, e);
+        }
+    }
+
+    @Override
+    public boolean updatePassword(MushroomHunter hunter, String oldPassword, String newPassword) throws DataAccessException {
+        try {
+            MushroomHunter toUpdate = hunterDao.findById(hunter.getId());
+            if (validatePassword(oldPassword, toUpdate.getPasswordHash())) {
+                toUpdate.setPasswordHash(createHash(newPassword));
+                hunterDao.update(toUpdate);
+                return true;
+            }
+            return false;
+        } catch (Throwable e) {
+            throw new EntityOperationServiceException("hunter", "update password", hunter, e);
+        }
+    }
+
+    @Override
+    public boolean authenticate(MushroomHunter hunter, String password) throws DataAccessException { //TODO: get fresh copy from db
+        try {
+            return validatePassword(password, hunter.getPasswordHash());
+        } catch (Throwable e) {
+            throw new EntityOperationServiceException("hunter", "authenticate", hunter, e);
+        }
+    }
+
+    @Override
+    public boolean isAdmin(MushroomHunter hunter) throws DataAccessException {
         return findHunterById(hunter.getId()).isAdmin();
     }
 
@@ -99,8 +135,8 @@ public class MushroomHunterServiceImpl implements MushroomHunterService {
     }
 
     public static boolean validatePassword(String password, String correctHash) {
-        if(password==null) return false;
-        if(correctHash==null) throw new IllegalArgumentException("password hash is null");
+        if (password == null) return false;
+        if (correctHash == null) throw new IllegalArgumentException("password hash is null");
         String[] params = correctHash.split(":");
         int iterations = Integer.parseInt(params[0]);
         byte[] salt = fromHex(params[1]);
