@@ -27,7 +27,7 @@ public class VisitServiceImpl implements VisitService {
         try {
             return visitDao.findById(id);
         } catch(Throwable e){
-            throw new MushroomHunterServiceDataAccessException("Could not find visit by id in the database - error.");
+            throw new MushroomHunterServiceDataAccessException("Could not find visit by id in the database - error.", e);
         }
     }
 
@@ -36,7 +36,7 @@ public class VisitServiceImpl implements VisitService {
         try {
             return visitDao.findAll();
         } catch(Throwable e){
-            throw new MushroomHunterServiceDataAccessException("Could not find visits in the database - error.");
+            throw new MushroomHunterServiceDataAccessException("Could not find visits in the database - error.", e);
         }
     }
 
@@ -45,7 +45,7 @@ public class VisitServiceImpl implements VisitService {
         try {
             return visitDao.findByDate(from, to);
         } catch(Throwable e){
-            throw new MushroomHunterServiceDataAccessException("Could not find visit by date in the database - error.");
+            throw new MushroomHunterServiceDataAccessException("Could not find visit by date in the database - error.", e);
         }
     }
 
@@ -54,7 +54,7 @@ public class VisitServiceImpl implements VisitService {
         try {
             visitDao.create(visit);
         }catch(Throwable e){
-            throw new MushroomHunterServiceDataAccessException("Could not create new visit - error.");
+            throw new MushroomHunterServiceDataAccessException("Could not create new visit - error.", e);
         }
     }
 
@@ -63,7 +63,7 @@ public class VisitServiceImpl implements VisitService {
         try {
             visitDao.delete(visit);
         } catch(Throwable e){
-            throw new MushroomHunterServiceDataAccessException("Could not delete visit - error.");
+            throw new MushroomHunterServiceDataAccessException("Could not delete visit - error.", e);
         }
     }
 
@@ -78,6 +78,9 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public List<Visit> getVisitsByHunter(MushroomHunter mushroomHunter) throws DataAccessException{
+        if (mushroomHunter == null){
+            throw new MushroomHunterServiceDataAccessException("Null hunter at finding visits.");
+        }
         List<Visit> visitsByHunter = new ArrayList<>();
         List<Visit> visits = visitDao.findAll();
 
@@ -91,7 +94,9 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public List<Visit> getVisitsByForest(Forest forest) throws DataAccessException{
-
+        if (forest == null){
+            throw new MushroomHunterServiceDataAccessException("Null forest at finding visits.");
+        }
         List<Visit> visitsByForest = new ArrayList<>();
         List<Visit> visits = findAllVisits(); // takes care of exceptions
 
@@ -105,7 +110,9 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public List<Visit> getVisitsByMushroom(Mushroom mushroom) throws DataAccessException{
-
+        if (mushroom == null){
+            throw new MushroomHunterServiceDataAccessException("Null mushroom at finding visits.");
+        }
         List<Visit> visitsByMushroom = new ArrayList<>();
         List<Visit> visits = findAllVisits(); // takes care of exceptions
         List<Mushroom> mushrooms;
