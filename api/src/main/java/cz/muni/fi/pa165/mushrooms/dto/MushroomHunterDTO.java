@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,10 +17,8 @@ public class MushroomHunterDTO {
     private String firstName;
     private String surname;
     private String personalInfo;
-    //private String passwordHash; // should not be here
     private boolean admin;
-    private Set<VisitDTO> visits = new HashSet<>(); //TODO: check
-    //TODO: add Visit relationships!
+    private List<VisitDTO> visits = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -76,11 +76,11 @@ public class MushroomHunterDTO {
         this.admin = admin;
     }
 
-    public Set<VisitDTO> getVisits() {
+    public List<VisitDTO> getVisits() {
         return visits;
     }
 
-    public void setVisits(Set<VisitDTO> visits) {
+    public void setVisits(List<VisitDTO> visits) {
         this.visits = visits;
     }
 

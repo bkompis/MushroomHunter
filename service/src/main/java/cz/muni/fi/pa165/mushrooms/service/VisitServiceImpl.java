@@ -64,6 +64,8 @@ public class VisitServiceImpl implements VisitService {
     @Override
     public void deleteVisit(Visit visit) throws DataAccessException {
         try {
+            Visit v = findVisitById(visit.getId());
+            v.getHunter().removeVisit(v); // otherwise, the visit won't be deleted
             visitDao.delete(visit);
         } catch (Throwable e) {
             throw new EntityOperationServiceException("visit", "delete", visit, e);
