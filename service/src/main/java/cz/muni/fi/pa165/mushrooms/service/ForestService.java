@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.service;
 
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,17 @@ import java.util.List;
  */
 public interface ForestService {
 
-    Forest findForestByName(String name);
-    Forest findForestById(Long id);
-    void deleteForest(Forest forest);
-    void updateForest(Forest forest);
-    void createForest(Forest forest);
+    List<Forest> findAllForests() throws DataAccessException;
 
-    List<Forest> findAllForestsWithMushroom(Mushroom mushroomEntity);
+    Forest findForestByName(String name) throws DataAccessException;
+
+    Forest findForestById(Long id) throws DataAccessException;
+
+    void deleteForest(Forest forest) throws DataAccessException;
+
+    void updateForest(Forest forest) throws DataAccessException;
+
+    void createForest(Forest forest) throws DataAccessException;
+
+    List<Forest> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException;
 }

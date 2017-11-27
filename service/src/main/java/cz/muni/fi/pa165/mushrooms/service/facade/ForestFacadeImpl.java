@@ -37,7 +37,7 @@ public class ForestFacadeImpl implements ForestFacade {
     public ForestDTO findByName(String name) {
         Forest forest = service.findForestByName(name);
         //TODO: logging?
-        if(forest == null) return null;
+        if (forest == null) return null;
         ForestDTO forestDTO = beanMappingService.mapTo(forest, ForestDTO.class);
         return forestDTO;
     }
@@ -46,7 +46,7 @@ public class ForestFacadeImpl implements ForestFacade {
     public ForestDTO findById(Long id) {
         Forest forest = service.findForestById(id);
         //TODO: logging?
-        if(forest == null) return null;
+        if (forest == null) return null;
         ForestDTO forestDTO = beanMappingService.mapTo(forest, ForestDTO.class);
         return forestDTO;
     }
@@ -63,11 +63,11 @@ public class ForestFacadeImpl implements ForestFacade {
 
     @Override
     public void updateForest(ForestDTO forest) {
-        if (forest == null){
+        if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
         Forest entityForest = service.findForestById(forest.getId());
-        if (entityForest == null){
+        if (entityForest == null) {
             //TODO: react to it somehow
         }
         entityForest.setDescription(forest.getDescription());
@@ -78,7 +78,7 @@ public class ForestFacadeImpl implements ForestFacade {
 
     @Override
     public void createForest(ForestDTO forest) {
-        if (forest == null){
+        if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
         Forest newForest = new Forest();

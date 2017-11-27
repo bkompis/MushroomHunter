@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(PersistenceSampleApplicationContext.class)
-@ComponentScan(basePackageClasses={MushroomHunterService.class, MushroomHunterFacade.class})
+@ComponentScan(basePackageClasses = {MushroomHunterService.class, MushroomHunterFacade.class})
 public class ServiceConfiguration {
     @Bean
-    public Mapper dozer(){
+    public Mapper dozer() {
         DozerBeanMapper dozer = new DozerBeanMapper();
         return dozer;
     }

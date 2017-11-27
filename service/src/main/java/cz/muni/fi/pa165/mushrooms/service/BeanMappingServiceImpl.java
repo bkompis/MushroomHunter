@@ -11,11 +11,11 @@ import java.util.List;
 
 @Service
 public class BeanMappingServiceImpl implements BeanMappingService {
-	
-	@Inject
+
+    @Inject
     private Mapper dozer;
 
-    public  <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass) {
+    public <T> List<T> mapTo(Collection<?> objects, Class<T> mapToClass) {
         List<T> mappedCollection = new ArrayList<>();
         for (Object object : objects) {
             mappedCollection.add(dozer.map(object, mapToClass));
@@ -23,12 +23,11 @@ public class BeanMappingServiceImpl implements BeanMappingService {
         return mappedCollection;
     }
 
-    public  <T> T mapTo(Object u, Class<T> mapToClass)
-    {
-        return dozer.map(u,mapToClass);
+    public <T> T mapTo(Object u, Class<T> mapToClass) {
+        return dozer.map(u, mapToClass);
     }
-    
-    public Mapper getMapper(){
-    	return dozer;
+
+    public Mapper getMapper() {
+        return dozer;
     }
 }

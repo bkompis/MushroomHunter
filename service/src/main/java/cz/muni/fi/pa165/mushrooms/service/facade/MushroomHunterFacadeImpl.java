@@ -33,7 +33,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public MushroomHunterDTO findHunterById(Long hunterId) {
         MushroomHunter hunter = service.findHunterById(hunterId);
-        if (hunter == null){
+        if (hunter == null) {
             return null;
         }
         MushroomHunterDTO mapped = beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
