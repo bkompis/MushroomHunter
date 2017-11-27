@@ -1,7 +1,9 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
-import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 
 /**
  * Created by Matúš on 18.11.2017.
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotNull;
 public class AddEditMushroomDTO {
 
     @NotNull
+    @Size(min = 3, max = 50)
     private String name;
 
     @NotNull

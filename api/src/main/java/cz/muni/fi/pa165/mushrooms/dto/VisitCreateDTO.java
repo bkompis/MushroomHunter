@@ -1,8 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * TODO: create  javadoc

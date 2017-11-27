@@ -3,15 +3,26 @@ package cz.muni.fi.pa165.mushrooms.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * The DTO to be used at user creation.
  *
  * @author bkompis
  */
 public class MushroomHunterCreateDTO {
+    @NotNull
+    @Size(min = 3, max = 50)
     private String userNickname;
+    @NotNull
+    @Size(min = 8, max = 150)
     private String unencryptedPassword;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String firstName;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String surname;
     private String personalInfo;
     private boolean admin;
