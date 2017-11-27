@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,6 +36,7 @@ public class MushroomHunter {
     @Column(nullable = false)
     private String surname;
 
+    @Column
     private boolean admin;
 
     @NotNull
@@ -43,11 +47,11 @@ public class MushroomHunter {
     private String personalInfo;
 
     @Column
-    private String passwordHash; //TODO: check interactions
+    private String passwordHash;
 
-    @OneToMany(mappedBy = "hunter")
+    @OneToMany(mappedBy = "hunter", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Column(nullable = false)
-    private Set<Visit> visits = new HashSet<>();
+    private List<Visit> visits = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -93,8 +97,8 @@ public class MushroomHunter {
         this.userNickname = userNickname;
     }
 
-    public Set<Visit> getVisits() {
-        return Collections.unmodifiableSet(visits);
+    public List<Visit> getVisits() {
+        return Collections.unmodifiableList(visits);
     }
 
     public String getPasswordHash() {
@@ -107,6 +111,34 @@ public class MushroomHunter {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Removes a Visit from this Forest and updates the appropriate MushroomHunter.
+     * @param toRemove
+     */
+    public void removeVisit(Visit toRemove){
+        boolean removedHunter = visits.remove(toRemove);
+        if (!removedHunter){
+            throw new IllegalArgumentException("Attempt to remove a visit not registered in hunter.");
+        }
+        boolean removedForest = toRemove.getForest().removeVisitOnlyHere(toRemove);
+        if (!removedForest){
+            throw new IllegalArgumentException("Attempt to remove a visit not registered in forest.");
+        }
+    }
+    //TODO: cascade, log info
+    // Appropriate reference is set using this method when attributes of Visit are set
+
+    void addVisit(Visit newVisit){
+        boolean added = visits.add(newVisit);
+        if (!added){
+            throw new IllegalArgumentException("Attempt to add duplicate visit to hunter.");
+        }
+    }
+
+    boolean removeVisitOnlyHere(Visit toRemove){
+        return visits.remove(toRemove);
     }
 
     @Override

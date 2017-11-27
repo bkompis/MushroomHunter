@@ -6,6 +6,7 @@ import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
+import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -13,6 +14,10 @@ import mockit.Tested;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -32,7 +37,9 @@ import static org.junit.Assert.*;
  *
  * @author bkompis
  */
-public class VisitServiceTest {
+@ContextConfiguration(classes = ServiceConfiguration.class)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Injectable
     private VisitDao visitDao;
 
@@ -328,13 +335,14 @@ public class VisitServiceTest {
     }
 
     @Test
-    public void updateVisit_valid_mushrooms(){
+    public void updateVisit_valid_addMushroom(){ //TODO: remove mushroom?
         Mushroom newMushroom = createMushroom("New", MushroomType.UNEDIBLE, "October", "October");
         visit1.addMushroom(newMushroom);
         service.updateVisit(visit1);
 
         assertThat(persistedVisits.get(visit1.getId()).getMushrooms()).containsExactlyInAnyOrder(mushroom1, newMushroom);
     }
+
 
     @Test
     public void updateVisit_invalid_nullForest(){

@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -26,7 +28,7 @@ public class MushroomHunterCreateDTO {
     private String surname;
     private String personalInfo;
     private boolean admin;
-    private Set<VisitDTO> visits = new HashSet<>(); //TODO: check this
+    private List<VisitDTO> visits = new ArrayList<>();
 
     public String getUserNickname() {
         return userNickname;
@@ -76,11 +78,11 @@ public class MushroomHunterCreateDTO {
         this.admin = admin;
     }
 
-    public Set<VisitDTO> getVisits() {
+    public List<VisitDTO> getVisits() {
         return visits;
     }
 
-    public void setVisits(Set<VisitDTO> visits) {
+    public void setVisits(List<VisitDTO> visits) {
         this.visits = visits;
     }
 }

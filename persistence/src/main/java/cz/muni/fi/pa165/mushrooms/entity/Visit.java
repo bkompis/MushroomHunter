@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.entity;
 
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -31,12 +32,12 @@ public class Visit {
     private Long id;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "visit_hunter", nullable = false)
     private MushroomHunter hunter;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
@@ -79,17 +80,23 @@ public class Visit {
         return mushrooms;
     }
 
-    //setters
     public void setId(Long id) {
         this.id = id;
     }
 
+    // used by @ManyToOne relationships
     public void setHunter(MushroomHunter hunter) {
         this.hunter = hunter;
+        if (hunter != null) {
+            hunter.addVisit(this);
+        }
     }
 
     public void setForest(Forest forest) {
         this.forest = forest;
+        if (forest != null) {
+            forest.addVisit(this);
+        }
     }
 
     public void setDate(LocalDate date) {
@@ -115,17 +122,19 @@ public class Visit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Visit)) return false;
-
-        Visit visit = (Visit) o;
-
-        if (!getHunter().equals(visit.getHunter())) return false;
-        if (!getForest().equals(visit.getForest())) return false;
-        if (getMushrooms() != null ? !getMushrooms().equals(visit.getMushrooms()) : visit.getMushrooms() != null)
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
             return false;
-        if (!getDate().equals(visit.getDate())) return false;
-        return getNote() != null ? getNote().equals(visit.getNote()) : visit.getNote() == null;
+        }
+        if (!(o instanceof Visit)) {
+            return false;
+        }
+        Visit visit = (Visit) o;
+        return Objects.equals(getHunter(), visit.getHunter()) &&
+                Objects.equals(getForest(), visit.getForest()) &&
+                Objects.equals(getDate(), visit.getDate());
     }
 
     @Override

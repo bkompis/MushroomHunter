@@ -2,6 +2,8 @@ package cz.muni.fi.pa165.mushrooms.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The DTO to be used at generic user update.
@@ -21,6 +23,7 @@ public class MushroomHunterUpdateDTO {
     private String userNickname;
     private String personalInfo;
     private boolean admin;
+    private List<VisitDTO> visits = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -68,5 +71,13 @@ public class MushroomHunterUpdateDTO {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public List<VisitDTO> getVisits() {
+        return visits;
+    }
+
+    public void setVisits(List<VisitDTO> visits) {
+        this.visits = visits;
     }
 }

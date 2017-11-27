@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,9 +33,9 @@ public class Forest {
 
     private String description;
 
-    @OneToMany(mappedBy = "forest")
+    @OneToMany(mappedBy = "forest", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Column(nullable = false)
-    private Set<Visit> visits = new HashSet<>();
+    private List<Visit> visits = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -58,8 +61,31 @@ public class Forest {
         this.description = description;
     }
 
-    public Set<Visit> getVisits() {
-        return Collections.unmodifiableSet(visits);
+    public List<Visit> getVisits() {
+        return Collections.unmodifiableList(visits);
+    }
+
+    public void removeVisit(Visit toRemove){
+        boolean removedForest = visits.remove(toRemove);
+        if (!removedForest){
+            throw new IllegalArgumentException("Attempt to remove a visit not registered in forest.");
+        }
+        boolean removedHunter = toRemove.getHunter().removeVisitOnlyHere(toRemove);
+        if (!removedHunter){
+            throw new IllegalArgumentException("Attempt to remove a visit not registered in hunter.");
+        }
+    }
+
+    // Appropriate reference is set using this method when attributes of Visit are set
+    void addVisit(Visit newVisit){
+        boolean added = visits.add(newVisit);
+        if (!added){
+            throw new IllegalArgumentException("Attempt to add duplicate visit to Forest.");
+        }
+    }
+
+    boolean removeVisitOnlyHere(Visit toRemove){
+        return visits.remove(toRemove);
     }
 
     @Override
