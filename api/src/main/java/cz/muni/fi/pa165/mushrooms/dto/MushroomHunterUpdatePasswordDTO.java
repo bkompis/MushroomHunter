@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
  * @author bkompis
  */
 public class MushroomHunterUpdatePasswordDTO {
-    // TODO: constraints
     private Long id;
     @NotNull
     @Size(min = 8, max = 150)

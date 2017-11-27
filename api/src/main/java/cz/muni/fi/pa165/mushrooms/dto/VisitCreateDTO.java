@@ -17,7 +17,6 @@ public class VisitCreateDTO {
     @NotNull
     private String date;
     private String note;
-
     private List<MushroomDTO> mushrooms;
 
     public MushroomHunterDTO getHunter() {
