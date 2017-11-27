@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +42,7 @@ public class Visit {
 
     @OneToMany
     //@JoinColumn(name = "visit_mushroom", nullable = true) // join column on one to many? o.O
-    private List<Mushroom> mushrooms;
+    private List<Mushroom> mushrooms = new ArrayList<>();
 
     @NotNull
     @Column(nullable = false)

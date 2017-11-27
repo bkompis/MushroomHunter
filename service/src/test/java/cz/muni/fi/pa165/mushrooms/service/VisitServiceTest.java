@@ -1,17 +1,11 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
-import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
-import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
-import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
-import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
-import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
-import mockit.Deencapsulation;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -21,12 +15,14 @@ import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -48,80 +44,38 @@ public class VisitServiceTest {
     private Forest forest1;
     private Forest forest2;
     private Visit visit1;
-    private Visit visit2; // maybe unnecessary
+    private Visit visit2;
     private Mushroom mushroom1;
     private Mushroom mushroom2;
 
-    private Map<Long, Visit> persistedVisits;
-    // stores 'database' size
-    private long dbCounter = 1;
+    private LocalDate time1 = LocalDate.of(2017, Month.JUNE, 15);
+    private LocalDate time2 = LocalDate.of(2017, Month.JULY, 10);
 
-    //TODO: move to TestUtils
-    private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
-        MushroomHunter hunter = new MushroomHunter();
-        hunter.setFirstName(firstName);
-        hunter.setSurname(surname);
-        hunter.setUserNickname(userNickname);
-        hunter.setPersonalInfo("Mushroom hunter " + userNickname + " - " + firstName + " " + surname);
-        return hunter;
-    }
+    private Map<Long, Visit> persistedVisits;
+    // stores 'database' size + 1 (for indexing like in a real db)
+    private long dbCounter = 1;
 
     @Before
     public void setUp() {
-        // note: for tests here, password hash and password are the same
-        hunter1 = createMushroomHunter("Alphonse", "Elric", "theGoodGuy");
-        hunter1.setPasswordHash("armor");
+        hunter1 = createHunter("Alphonse", "Elric", "theGoodGuy", false);
         hunter1.setId(1L);
-
-        hunter2 = createMushroomHunter("Edward", "Elric", "fullmetal");
-        hunter2.setPasswordHash("winry");
+        hunter2 = createHunter("Edward", "Elric", "fullmetal", true);
         hunter2.setId(2L);
-        hunter2.setAdmin(true);
+        forest1 = createForest("Nice", "a nice forest");
+        forest1.setId(1L);
+        forest2 = createForest("Normal", "a normal forest");
+        forest2.setId(2L);
 
-        forest1 = new Forest();
-        forest1.setName("Listnaty");
-        Deencapsulation.setField(forest1, "id", 1L);
-
-        forest2 = new Forest();
-        forest2.setName("Ihlicnaty");
-        Deencapsulation.setField(forest2, "id", 2L);
-
-        mushroom1 = new Mushroom();
-        mushroom1.setName("Hrib Dubovy");
-        mushroom1.setType(MushroomType.EDIBLE);
-        mushroom1.setIntervalOfOccurrence("June", "July");
+        mushroom1 = createMushroom("Hrib Dubovy", MushroomType.EDIBLE, "June", "July");
         mushroom1.setId(1L);
-
-        mushroom2 = new Mushroom();
-        mushroom2.setName("Hrib Satan");
-        mushroom2.setType(MushroomType.POISONOUS);
-        mushroom2.setIntervalOfOccurrence("July", "September");
+        mushroom2 = createMushroom("Hrib Satan", MushroomType.POISONOUS, "July", "September");
         mushroom1.setId(2L);
 
-        visit1 = new Visit();
-        visit1.setDate(LocalDate.now());
-        visit1.setHunter(hunter1);
-        visit1.setForest(forest1);
-        List<Mushroom> shrooms1 = new ArrayList<>();
-        shrooms1.add(mushroom1);
-        shrooms1.add(mushroom2);
-        visit1.setMushrooms(shrooms1);
-        visit1.setId(1L);
-
-        visit2 = new Visit();
-        visit2.setDate(LocalDate.now());
-        visit2.setHunter(hunter2);
-        visit2.setForest(forest2);
-        List<Mushroom> shrooms2 = new ArrayList<>();
-        shrooms2.add(mushroom1);
-        visit2.setMushrooms(shrooms2);
-        visit2.setId(2L);
-
-        persistedVisits = new HashMap<>();
-        persistedVisits.put(dbCounter, visit1);
-        dbCounter++;
-        persistedVisits.put(dbCounter, visit2);
-        dbCounter++;
+        visit1 = createVisit(hunter1, forest2, time1);
+        visit1.addMushroom(mushroom1);
+        visit2 = createVisit(hunter2, forest1, time2);
+        visit2.addMushroom(mushroom1);
+        visit2.addMushroom(mushroom2);
 
         new Expectations() {{
             visitDao.create((Visit) any);
@@ -133,16 +87,10 @@ public class VisitServiceTest {
                     if (visit.getId() != null) {
                         throw new IllegalArgumentException("already in db");
                     }
-                    if (visit.getDate() == null) {
-                        throw new IllegalArgumentException("null date");
+                    if (!checkVisitValidity(visit)){
+                        throw new IllegalArgumentException("invalid entity");
                     }
-                    if (visit.getForest() == null) {
-                        throw new IllegalArgumentException("null forest");
-                    }
-                    if (visit.getHunter() == null) {
-                        throw new IllegalArgumentException("null hunter");
-                    }
-                    if (TestUtils.checkVisitDuplicity(persistedVisits, visit)) {
+                    if (checkVisitDuplicity(persistedVisits, visit)) {
                         throw new IllegalArgumentException("duplicate");
                     }
 
@@ -162,7 +110,6 @@ public class VisitServiceTest {
                     if (persistedVisits.get(visit.getId()) == null) {
                         throw new IllegalArgumentException("not in db");
                     }
-                    // TODO" other error cases
                     persistedVisits.remove(visit.getId());
                 }
             };
@@ -177,8 +124,11 @@ public class VisitServiceTest {
                     if (visit.getId() == null) {
                         throw new IllegalArgumentException("null entity id");
                     }
-                    if (TestUtils.checkVisitDuplicity(persistedVisits, visit)) {
+                    if (checkVisitDuplicity(persistedVisits, visit)) {
                         throw new IllegalArgumentException("duplicate after update");
+                    }
+                    if (!checkVisitValidity(visit)){
+                        throw new IllegalArgumentException("invalid entity");
                     }
                     persistedVisits.replace(visit.getId(), visit);
                 }
@@ -223,6 +173,16 @@ public class VisitServiceTest {
             minTimes = 0;
 
         }};
+
+        // "persist" visits:
+        // does not use mocked service, to be sure
+        persistedVisits = new HashMap<>();
+        persistedVisits.put(dbCounter, visit1);
+        visit1.setId(dbCounter);
+        dbCounter++;
+        persistedVisits.put(dbCounter, visit2);
+        visit2.setId(dbCounter);
+        dbCounter++;
     }
 
     @Test
@@ -247,13 +207,24 @@ public class VisitServiceTest {
     }
 
     @Test
-    public void findVisitByDate() { //TODO
+    public void findVisitByDate_valid_both() {
+        assertThat(service.findVisitByDate(time1.minusDays(1), time2.plusDays(1))).containsExactlyInAnyOrder(visit1, visit2);
+    }
+
+    @Test
+    public void findVisitByDate_valid_earlier() {
+        assertThat(service.findVisitByDate(time1.minusDays(1), time1.plusDays(2))).containsExactlyInAnyOrder(visit1);
+    }
+
+    @Test
+    public void findVisitByDate_valid_later() {
+        assertThat(service.findVisitByDate(time2.minusDays(2), time2.plusDays(1))).containsExactlyInAnyOrder(visit2);
     }
 
     @Test
     public void createVisit_valid() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
         service.createVisit(newVisit);
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2, newVisit);
     }
@@ -267,7 +238,7 @@ public class VisitServiceTest {
     @Test
     public void createVisit_invalidVisit_nullForest() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
         newVisit.setForest(null);
         assertThatThrownBy(() -> service.createVisit(newVisit)).isInstanceOf(DataAccessException.class);
     }
@@ -275,7 +246,7 @@ public class VisitServiceTest {
     @Test
     public void createVisit_invalidVisit_nullHunter() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
         newVisit.setHunter(null);
         assertThatThrownBy(() -> service.createVisit(newVisit)).isInstanceOf(DataAccessException.class);
     }
@@ -283,7 +254,7 @@ public class VisitServiceTest {
     @Test
     public void createVisit_invalidVisit_nullDate() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
         newVisit.setDate(null);
         assertThatThrownBy(() -> service.createVisit(newVisit)).isInstanceOf(DataAccessException.class);
     }
@@ -291,7 +262,7 @@ public class VisitServiceTest {
     @Test
     public void createVisit_duplicateVisit() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(visit1.getHunter(), visit1.getForest(), LocalDate.now());
         newVisit.setForest(visit1.getForest());
         newVisit.setHunter(visit1.getHunter());
         newVisit.setDate(visit1.getDate());
@@ -301,9 +272,8 @@ public class VisitServiceTest {
     @Test
     public void createVisit_invalidVisit_hasId() {
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
-        Visit newVisit = TestUtils.createVisit(); //TODO
+        Visit newVisit = createVisit(visit1.getHunter(), visit1.getForest(), LocalDate.now());
         newVisit.setId(15L);
-        service.createVisit(newVisit);
         assertThatThrownBy(() -> service.createVisit(newVisit)).isInstanceOf(DataAccessException.class);
     }
 
@@ -341,19 +311,125 @@ public class VisitServiceTest {
     }
 
     @Test
-    public void updateVisit() {
+    public void updateVisit_valid_mainAttributes() {
+        visit1.setNote("Another note");
+        visit1.setDate(LocalDate.of(2015, Month.APRIL, 12));
+        visit1.setForest(visit2.getForest());
+        visit1.setHunter(visit2.getHunter());
+
+        service.updateVisit(visit1);
+
+        assertThat(persistedVisits.values()).contains(visit1);
+        Visit persistedVisit = persistedVisits.get(visit1.getId());
+        assertThat(persistedVisit.getNote()).isEqualTo("Another note");
+        assertThat(persistedVisit.getDate()).isEqualTo(LocalDate.of(2015, Month.APRIL, 12));
+        assertThat(persistedVisit.getForest()).isEqualTo(visit2.getForest());
+        assertThat(persistedVisit.getHunter()).isEqualTo(visit2.getHunter());
+    }
+
+    @Test
+    public void updateVisit_valid_mushrooms(){
+        Mushroom newMushroom = createMushroom("New", MushroomType.UNEDIBLE, "October", "October");
+        visit1.addMushroom(newMushroom);
+        service.updateVisit(visit1);
+
+        assertThat(persistedVisits.get(visit1.getId()).getMushrooms()).containsExactlyInAnyOrder(mushroom1, newMushroom);
+    }
+
+    @Test
+    public void updateVisit_invalid_nullForest(){
+        visit1.setForest(null);
+        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void updateVisit_invalid_nullHunter(){
+        visit1.setHunter(null);
+        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void updateVisit_invalid_nullDate(){
+        visit1.setDate(null);
+        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void updateVisit_invalid_duplicateVisit(){
+        visit1.setHunter(visit2.getHunter());
+        visit1.setForest(visit2.getForest());
+        visit1.setDate(visit2.getDate());
+        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void updateVisit_invalid_nullVisit(){
+        assertThatThrownBy(()-> service.updateVisit(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
     public void getVisitsByHunter() {
+        assertThat(service.getVisitsByHunter(hunter1)).containsExactly(visit1);
+        assertThat(service.getVisitsByHunter(hunter2)).containsExactly(visit2);
+    }
+
+    // dependent on create
+    @Test
+    public void getVisitsByHunter_more() {
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
+        service.createVisit(newVisit);
+
+        assertThat(service.getVisitsByHunter(hunter1)).containsExactlyInAnyOrder(visit1, newVisit);
+        assertThat(service.getVisitsByHunter(hunter2)).containsExactly(visit2);
+    }
+
+    @Test
+    public void getVisitsByHunter_nullHunter(){
+        assertThatThrownBy(()-> service.getVisitsByHunter(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
     public void getVisitsByForest() {
+        assertThat(service.getVisitsByForest(forest1)).containsExactly(visit2);
+        assertThat(service.getVisitsByForest(forest2)).containsExactly(visit1);
+    }
+
+    // dependent on create
+    @Test
+    public void getVisitsByForest_more() {
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
+        service.createVisit(newVisit);
+
+        assertThat(service.getVisitsByForest(forest1)).containsExactlyInAnyOrder(visit2, newVisit);
+        assertThat(service.getVisitsByForest(forest2)).containsExactly(visit1);
     }
 
     @Test
+    public void getVisitsByForest_nullForest(){
+        assertThatThrownBy(()-> service.getVisitsByForest(null)).isInstanceOf(DataAccessException.class);
+    }
+
+
+    @Test
     public void getVisitsByMushroom() {
+        assertThat(service.getVisitsByMushroom(mushroom1)).containsExactlyInAnyOrder(visit1, visit2);
+        assertThat(service.getVisitsByMushroom(mushroom2)).containsExactly(visit2);
+    }
+
+    // dependent on create
+    @Test
+    public void getVisitsByMushroom_more() {
+        Visit newVisit = createVisit(hunter1, forest1, LocalDate.now());
+        newVisit.addMushroom(mushroom2);
+        service.createVisit(newVisit);
+
+        assertThat(service.getVisitsByMushroom(mushroom1)).containsExactlyInAnyOrder(visit1, visit2);
+        assertThat(service.getVisitsByMushroom(mushroom2)).containsExactly(visit2, newVisit);
+    }
+
+    @Test
+    public void getVisitsMushroom_nullMushroom(){
+        assertThatThrownBy(()-> service.getVisitsByMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
 }
