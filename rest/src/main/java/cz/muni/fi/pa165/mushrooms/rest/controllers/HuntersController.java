@@ -30,19 +30,19 @@ public class HuntersController {
     private MushroomHunterFacade hunterFacade;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Collection<MushroomHunterDTO> getUsers() throws JsonProcessingException {
-        logger.debug("rest getUsers()");
+    public final Collection<MushroomHunterDTO> getHunters() throws JsonProcessingException {
+        logger.debug("rest getHunters()");
         return hunterFacade.findAllHunters();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final MushroomHunterDTO getUser(@PathVariable("id") long id) throws Exception {
+    public final MushroomHunterDTO getHunter(@PathVariable("id") long id) throws Exception {
         logger.debug("rest getHunter({})", id);
-        MushroomHunterDTO userDTO = hunterFacade.findHunterById(id);
-        if (userDTO == null){
+        MushroomHunterDTO hunterDTO = hunterFacade.findHunterById(id);
+        if (hunterDTO == null){
             throw new ResourceNotFoundException();
         }
-        return userDTO;
+        return hunterDTO;
     }
 
 
