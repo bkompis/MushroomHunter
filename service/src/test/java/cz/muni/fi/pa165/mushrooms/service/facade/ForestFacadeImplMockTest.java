@@ -91,6 +91,17 @@ public class ForestFacadeImplMockTest extends AbstractTransactionalJUnit4SpringC
             };
             minTimes = 0;
 
+            service.findAllForests();
+            result = new Delegate() {
+                List<Forest> foo() {
+                    List<Forest> list = new ArrayList<>();
+                    list.add(forest1);
+                    list.add(forest2);
+                    return list;
+                }
+            };
+            minTimes = 0;
+
             service.deleteForest((Forest) any);
             result = new Delegate() {
                 void foo(Forest forest) {
@@ -155,6 +166,11 @@ public class ForestFacadeImplMockTest extends AbstractTransactionalJUnit4SpringC
         assertThat(facade.findById(1L)).isEqualToComparingFieldByField(forestDTO1);
         assertThat(facade.findById(2L)).isEqualToComparingFieldByField(forestDTO2);
         assertThat(facade.findById(123L)).isNull();
+    }
+
+    @Test
+    public void findAllForestsTest() {
+        assertThat(facade.findAllForests()).containsExactlyInAnyOrder(forestDTO1, forestDTO2);
     }
 
     //Delete, update, create not testable very well by mock - no access to database,

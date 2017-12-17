@@ -40,6 +40,13 @@ public interface ForestFacade {
     void deleteForest(Long id);
 
     /**
+     * Find all Forests.
+     *
+     * @return a list of all found Forests, empty list if none are found.
+     */
+    List<ForestDTO> findAllForests();
+
+    /**
      * Takes an object of type Forest and update this in a database.
      * You are not able to update an id of the forest.
      *

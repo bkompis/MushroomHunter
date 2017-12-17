@@ -80,6 +80,11 @@ public class ForestFacadeImplNoMockTest extends AbstractTransactionalJUnit4Sprin
     }
 
     @Test
+    public void findAllForests() {
+        assertThat(facade.findAllForests()).containsExactlyInAnyOrder(forestDTO1, forestDTO2);
+    }
+
+    @Test
     public void delete() {
         facade.deleteForest(forestDTO1.getId());
         assertThat(facade.findById(forestDTO1.getId())).isNull();
