@@ -21,23 +21,27 @@
 
         <div class="form-group ${forest_error?'has-error':''}">
             <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
-            <select name="forests">
-                <c:forEach items="${forests}" var="mushroom">
-                    <option value="${forest.name}">${forest.name}</option>
-                </c:forEach>
-            </select>
+            <div class="col-sm-10">
+                <form:select path="forest" name="forest">
+                    <c:forEach items="${forests}" var="forest">
+                        <option value="${forest}">${forest.name}</option>
+                    </c:forEach>
+                </form:select>
+                <form:errors path="forest" cssClass="help-block"/>
+            </div>
         </div>
 
         <div class="form-group ${mushrooms_error?'has-error':''}">
             <form:label path="mushrooms" cssClass="col-sm-2 control-label">Mushrooms found</form:label>
-            <select name="mushrooms" multiple="multiple">
-                <c:forEach items="${mushrooms}" var="mushroom">
-                    <option value="${mushroom.name}">${mushroom.name}</option>
-                </c:forEach>
-            </select>
+            <div class="col-sm-10">
+                <form:select path="mushrooms" name="mushrooms" multiple="multiple">
+                    <c:forEach items="${mushrooms}" var="mushroom">
+                        <option value="${mushroom.name}">${mushroom.name}</option>
+                    </c:forEach>
+                </form:select>
+                <form:errors path="mushrooms" cssClass="help-block"/>
+            </div>
         </div>
-
-
 
       <button class="btn btn-primary" type="submit">Register new visit</button>
     </form:form>

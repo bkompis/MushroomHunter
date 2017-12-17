@@ -22,18 +22,20 @@
 
         <div class="form-group ${forest_error?'has-error':''}">
             <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
-            <div class="col-sm-10">
-                <form:input path="forest.name" cssClass="form-control"/>
-                <form:errors path="forest" cssClass="help-block"/>
-            </div>
+            <select name="forests">
+                <c:forEach items="${forests}" var="forest">
+                    <option value="${forest.name}">${forest.name}</option>
+                </c:forEach>
+            </select>
         </div>
 
-        <div class="form-group ${surname_error?'has-error':''}">
+        <div class="form-group ${mushrooms_error?'has-error':''}">
             <form:label path="mushrooms" cssClass="col-sm-2 control-label">Mushrooms found</form:label>
-            <div class="col-sm-10">
-                <form:input path="mushrooms" cssClass="form-control"/>
-                <form:errors path="mushrooms" cssClass="help-block"/>
-            </div>
+            <select name="mushrooms" multiple="multiple">
+                <c:forEach items="${mushrooms}" var="mushroom">
+                    <option value="${mushroom.name}">${mushroom.name}</option>
+                </c:forEach>
+            </select>
         </div>
 
         <div class="form-group ${date_error?'has-error':''}">

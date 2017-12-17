@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 
 
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterCreateDTO;
+import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
 import cz.muni.fi.pa165.mushrooms.dto.VisitCreateDTO;
 import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
 import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
@@ -60,12 +62,49 @@ public class VisitController {
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String registerUser(Model model, HttpServletRequest request) {
+
+        MushroomHunterDTO hunter = (MushroomHunterDTO) request.getSession().getAttribute("user");
+
         log.debug("[VISIT] Register new Visit");
         model.addAttribute("registerVisit", new VisitCreateDTO());
-        model.addAttribute("jaros", forestFacade.findAllForests());
         model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
+        model.addAttribute("forests", forestFacade.findAllForests());
         return "visits/create";
     } //Password.123
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String register(@Valid @ModelAttribute("registerVisit") VisitCreateDTO formBean, BindingResult bindingResult,
+                           Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder uriBuilder, HttpServletRequest request) {
+        log.debug("creating visit", formBean);
+
+        log.error("creating visit" + formBean.getNote()+ formBean.getForest() + formBean.getMushrooms(), formBean);
+
+        if (bindingResult.hasErrors()) {
+            for (ObjectError ge : bindingResult.getGlobalErrors()) {
+                log.debug("ObjectError: {}", ge);
+            }
+            for (FieldError fe : bindingResult.getFieldErrors()) {
+                model.addAttribute(fe.getField() + "_error", true);
+                log.debug("FieldError: {}", fe);
+            }
+
+            model.addAttribute("registerVisit", formBean);
+
+            log.error("creating visit" + formBean.getForest() + formBean.getMushrooms(), formBean);
+
+            return "/visits/create";
+        }
+
+        formBean.setHunter(hunterFacade.findHunterById(1L));
+        VisitDTO visit = visitFacade.createVisit(formBean);
+
+        //request.getSession().setAttribute("user", user);
+        //report success
+        redirectAttributes.addFlashAttribute("alert_success", "Register visit " + formBean.getDate() + " succeeded");
+
+        return "redirect:" + uriBuilder.path("/").build().toUriString(); //TODO: change to "profile" page
+    }
+
 
     @RequestMapping(value = "/read/{id}", method = RequestMethod.GET)
     public String read(@PathVariable long id, Model model, UriComponentsBuilder uriBuilder, HttpServletRequest request) {
@@ -92,6 +131,8 @@ public class VisitController {
         VisitDTO visitDTO = visitFacade.findById(id);
 
         model.addAttribute("visitEdit", visitDTO);
+        model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
+        model.addAttribute("forests", forestFacade.findAllForests());
         return "/visits/edit";
     }
 
@@ -121,6 +162,8 @@ public class VisitController {
             model.addAttribute("visitEdit", formBean);
             return "visits/edit";
         }
+
+        formBean.setHunter(hunterFacade.findHunterById(1L));
 
         log.debug("[HUNTER] Update: {}", formBean);
         visitFacade.updateVisit(formBean);
