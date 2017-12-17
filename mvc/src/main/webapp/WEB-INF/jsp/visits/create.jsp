@@ -20,24 +20,13 @@
         </div>
 
         <div class="form-group ${firstName_error?'has-error':''}">
-            <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
-            <div class="col-sm-10">
-                <form:input path="forest" cssClass="form-control"/>
-                <form:errors path="forest" cssClass="help-block"/>
-            </div>
-        </div>
-
-        <div class="form-group ${firstName_error?'has-error':''}">
-            <select name="types" size="5">
-                <c:forEach items="${report.list}" var="type">
-                    <option value="${type}">${type}</option>
+            <form:label path="mushrooms" cssClass="col-sm-2 control-label">Mushrooms found</form:label>
+            <select name="mushrooms" multiple="multiple">
+                <c:forEach items="${mushrooms}" var="mushroom">
+                    <option value="${mushroom.name}">${mushroom.name}</option>
                 </c:forEach>
             </select>
         </div>
-
-        <pre>
-            <my:forest_template listName="forests"/>
-        </pre>
 
       <button class="btn btn-primary" type="submit">Register new visit</button>
     </form:form>

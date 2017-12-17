@@ -66,6 +66,7 @@ public class VisitController {
         log.debug("[VISIT] Register new Visit");
         model.addAttribute("registerVisit", new VisitCreateDTO());
         //model.addAttribute("forests", forestFacade.());
+        model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
         return "visits/create";
     } //Password.123
 
@@ -90,7 +91,7 @@ public class VisitController {
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editUser(@PathVariable long id, Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
 
-        log.debug("[HUNTER] Edit {}", id);
+        log.debug("[VISIT] Edit {}", id);
         VisitDTO visitDTO = visitFacade.findById(id);
 
         model.addAttribute("visitEdit", visitDTO);
