@@ -1,15 +1,12 @@
 package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 
 
-import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterCreateDTO;
-import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterUpdateDTO;
 import cz.muni.fi.pa165.mushrooms.dto.VisitCreateDTO;
 import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
 import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomFacade;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomHunterFacade;
 import cz.muni.fi.pa165.mushrooms.facade.VisitFacade;
-import cz.muni.fi.pa165.mushrooms.mvc.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -65,7 +62,7 @@ public class VisitController {
     public String registerUser(Model model, HttpServletRequest request) {
         log.debug("[VISIT] Register new Visit");
         model.addAttribute("registerVisit", new VisitCreateDTO());
-        //model.addAttribute("forests", forestFacade.());
+        model.addAttribute("jaros", forestFacade.findAllForests());
         model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
         return "visits/create";
     } //Password.123
@@ -131,5 +128,4 @@ public class VisitController {
         redirectAttributes.addFlashAttribute("alert_success", "Visit " + formBean.getNote() + " was updated");
         return "redirect:" + uriBuilder.path("/visits/read/{id}").buildAndExpand(id).encode().toUriString();
     }
-
 }

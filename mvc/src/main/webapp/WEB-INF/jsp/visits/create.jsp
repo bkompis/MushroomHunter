@@ -11,7 +11,7 @@
     <form:form method="post" action="${pageContext.request.contextPath}/visits/create/"
                modelAttribute="registerVisit" cssClass="form-horizontal">
 
-        <div class="form-group ${firstName_error?'has-error':''}">
+        <div class="form-group ${note_error?'has-error':''}">
             <form:label path="note" cssClass="col-sm-2 control-label">Note</form:label>
             <div class="col-sm-10">
                 <form:input path="note" cssClass="form-control"/>
@@ -19,7 +19,16 @@
             </div>
         </div>
 
-        <div class="form-group ${firstName_error?'has-error':''}">
+        <div class="form-group ${forest_error?'has-error':''}">
+            <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
+            <select name="forests">
+                <c:forEach items="${forests}" var="mushroom">
+                    <option value="${forest.name}">${forest.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <div class="form-group ${mushrooms_error?'has-error':''}">
             <form:label path="mushrooms" cssClass="col-sm-2 control-label">Mushrooms found</form:label>
             <select name="mushrooms" multiple="multiple">
                 <c:forEach items="${mushrooms}" var="mushroom">
@@ -27,6 +36,8 @@
                 </c:forEach>
             </select>
         </div>
+
+
 
       <button class="btn btn-primary" type="submit">Register new visit</button>
     </form:form>
