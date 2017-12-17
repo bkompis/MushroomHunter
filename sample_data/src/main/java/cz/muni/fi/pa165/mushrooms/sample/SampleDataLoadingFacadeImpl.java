@@ -1,7 +1,9 @@
 package cz.muni.fi.pa165.mushrooms.sample;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
@@ -15,7 +17,6 @@ import cz.muni.fi.pa165.mushrooms.service.MushroomService;
 import cz.muni.fi.pa165.mushrooms.service.VisitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
         createVisit("First time visit", LocalDate.ofEpochDay(50), hunters.get("john"), forests.get("magic forest"));
         createVisit("Last time visit", LocalDate.now(), hunters.get("dennis"), forests.get("deep forest"));
         createVisit("Some other visit", LocalDate.ofEpochDay(2200), hunters.get("benny"), forests.get("deep forest"));
+        createVisit("Some new visit", LocalDate.ofEpochDay(2300), hunters.get("benny"), forests.get("deep forest"), new ArrayList<Mushroom>(mushrooms.values()));
         log.info("Visits have been created!");
     }
 
@@ -87,6 +89,7 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
         createHunter("Anna", "Karenina","Russia4Ever!", false);
         createHunter("Dennis", "Ritchie", true);
         createHunter("Admin", "Project", true);
+        createHunter("George", "Miller", true);
         log.info("Mushroom hunters has been created!");
     }
 
@@ -122,6 +125,17 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
         Visit visit = new Visit();
         visit.setNote(note);
         visit.setDate(date);
+        visit.setHunter(hunter);
+        visit.setForest(forest);
+        visitService.createVisit(visit);
+        log.debug("Creating visit: " + visit);
+    }
+
+    private void createVisit(String note, LocalDate date, MushroomHunter hunter, Forest forest, List<Mushroom> mushrooms) {
+        Visit visit = new Visit();
+        visit.setNote(note);
+        visit.setDate(date);
+        visit.setMushrooms(mushrooms);
         visit.setHunter(hunter);
         visit.setForest(forest);
         visitService.createVisit(visit);
