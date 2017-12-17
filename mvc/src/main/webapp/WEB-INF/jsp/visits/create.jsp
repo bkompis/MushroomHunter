@@ -19,12 +19,20 @@
             </div>
         </div>
 
+        <div class="form-group ${date_error?'has-error':''}">
+            <form:label path="date" cssClass="col-sm-2 control-label">Date (YYYY-MM-DD)</form:label>
+            <div class="col-sm-10">
+                <form:input path="date" cssClass="form-control"/>
+                <form:errors path="date" cssClass="help-block"/>
+            </div>
+        </div>
+
         <div class="form-group ${forest_error?'has-error':''}">
             <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
             <div class="col-sm-10">
                 <form:select path="forest" name="forest">
                     <c:forEach items="${forests}" var="forest">
-                        <option value="${forest}">${forest.name}</option>
+                        <option value="${forest.id}">${forest.name}</option>
                     </c:forEach>
                 </form:select>
                 <form:errors path="forest" cssClass="help-block"/>
