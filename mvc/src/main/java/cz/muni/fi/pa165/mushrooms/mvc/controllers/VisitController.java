@@ -77,7 +77,7 @@ public class VisitController {
                            Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder uriBuilder, HttpServletRequest request) {
         log.debug("creating visit", formBean);
 
-        log.error("creating visit" + formBean.getNote()+ formBean.getForest() + formBean.getMushrooms(), formBean);
+        log.error("creating visit" + formBean.getNote() + " " + formBean.getForest() + " " + formBean.getMushrooms() + " " + formBean.getDate(), formBean);
 
         if (bindingResult.hasErrors()) {
             for (ObjectError ge : bindingResult.getGlobalErrors()) {
