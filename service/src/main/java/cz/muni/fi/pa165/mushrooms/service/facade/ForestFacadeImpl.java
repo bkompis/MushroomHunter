@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
+import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
@@ -8,6 +9,8 @@ import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.ForestService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomService;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +64,11 @@ public class ForestFacadeImpl implements ForestFacade {
         Forest forest = service.findForestById(id);
         service.deleteForest(forest);
         return;
+    }
+
+    @Override
+    public List<ForestDTO> findAllForests() {
+        return beanMappingService.mapTo(service.findAllForests(), ForestDTO.class);
     }
 
     @Override
