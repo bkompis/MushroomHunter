@@ -64,6 +64,10 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public void deleteForest(Forest forest) throws DataAccessException {
         try {
+            List<Visit> visits = new ArrayList<>(forest.getVisits());
+            for (Visit v : visits){
+                visitService.deleteVisit(v);
+            }
             forestDao.delete(forest);
         } catch (Throwable e) {
             throw new EntityOperationServiceException("forest", "delete", forest, e);

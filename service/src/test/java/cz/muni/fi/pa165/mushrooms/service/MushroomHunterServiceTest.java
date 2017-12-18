@@ -30,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
+    @Injectable
+    private VisitService visitService;
 
     @Injectable
     private MushroomHunterDao mushroomHunterDao;
