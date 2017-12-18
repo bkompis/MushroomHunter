@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.mushrooms.mvc.config;
 
+import cz.muni.fi.pa165.mushrooms.mvc.converters.ForestConverter;
+import cz.muni.fi.pa165.mushrooms.mvc.converters.HunterConverter;
 import cz.muni.fi.pa165.mushrooms.sample.SampleDataConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
@@ -18,6 +24,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @EnableWebMvc
@@ -64,6 +73,23 @@ public class MySpringMvcConfig extends WebMvcConfigurerAdapter {
         viewResolver.setPrefix("/WEB-INF/jsp/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
+    }
+
+    @Bean
+    ForestConverter forestConverter() {
+        return new ForestConverter();
+    }
+
+    @Bean
+    HunterConverter hunterConverter() {
+        return new HunterConverter();
+    }
+
+
+    @Override
+    public void addFormatters (FormatterRegistry registry) {
+        registry.addConverter(forestConverter());
+        registry.addConverter(hunterConverter());
     }
 
     /**
