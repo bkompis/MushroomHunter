@@ -4,6 +4,7 @@ package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomFacade;
+import cz.muni.fi.pa165.mushrooms.mvc.forms.MushroomDTOValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,32 +82,19 @@ public class MushroomController {
         log.debug("mushroomType()");
         return MushroomType.values();
     }
-/*
-    @ModelAttribute("currencies")
-    public Currency[] currencies() {
-        log.debug("colors()");
-        return Currency.values();
-    }
-
-    @ModelAttribute("categories")
-    public List<CategoryDTO> categories() {
-        log.debug("categories()");
-        return categoryFacade.getAllCategories();
-    }*/
-
     /**
      * Spring Validator added to JSR-303 Validator for this @Controller only.
      * It is useful  for custom validations that are not defined on the form bean by annotations.
      * http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html#validation-mvc-configuring
      */
-    /*
+
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        if (binder.getTarget() instanceof ProductCreateDTO) {
-            binder.addValidators(new ProductCreateDTOValidator());
+        if (binder.getTarget() instanceof MushroomDTO) {
+            binder.addValidators(new MushroomDTOValidator());
         }
     }
-    */
+
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public String create(@Valid @ModelAttribute("mushroomCreate") MushroomDTO formBean, BindingResult bindingResult,

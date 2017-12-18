@@ -29,8 +29,8 @@
         }
     </script>
 
-    <table class="table"> <%-- TODO: change size, add create visit button--%>
-        <caption>Mushroom hunter '<c:out value="${mushroom.name}"/>'</caption>
+    <table class="table">
+        <caption>Mushroom '<c:out value="${mushroom.name}"/>'</caption>
         <thead>
         <tr>
             <th>Name</th>
