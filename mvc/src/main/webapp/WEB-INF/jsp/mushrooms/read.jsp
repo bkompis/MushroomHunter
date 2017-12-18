@@ -77,5 +77,10 @@
         </tbody>
     </table>
 
+    <button class="btn btn-primary"
+            onclick="location.href='${pageContext.request.contextPath}/${end}'">
+        Return
+    </button>
+
 </jsp:attribute>
 </my:pagetemplate>

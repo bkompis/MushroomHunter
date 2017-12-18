@@ -7,6 +7,10 @@ import org.springframework.validation.Validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author bencikpeter
+ */
+
 public class MushroomDTOValidator implements Validator {
     @Override
     public boolean supports(Class<?> aClass) {
@@ -20,7 +24,7 @@ public class MushroomDTOValidator implements Validator {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(dto.getIntervalOfOccurrence());
         if (!m.matches()){
-            errors.rejectValue("intervaOfOccurrence", "String in a wrong format");
+            errors.rejectValue("intervalOfOccurrence", "MushroomDTOValidator.intervalOfOccurence.wrongFormat");
         }
 
     }

@@ -24,7 +24,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Calendar;
 import java.util.List;
+
+/**
+ * @author bencikpeter
+ */
 
 @Controller
 @RequestMapping("/mushrooms")
@@ -82,11 +87,15 @@ public class MushroomController {
         log.debug("mushroomType()");
         return MushroomType.values();
     }
-    /**
-     * Spring Validator added to JSR-303 Validator for this @Controller only.
-     * It is useful  for custom validations that are not defined on the form bean by annotations.
-     * http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html#validation-mvc-configuring
-     */
+
+    @ModelAttribute("months")
+    public String[] months() {
+        log.debug("mushroomType()");
+        String[] months = {"january", "february", "march", "april",
+                            "may", "june", "july", "september", "october",
+                            "november", "decemer"};
+        return months;
+    }
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -107,6 +116,7 @@ public class MushroomController {
             }
             for (FieldError fe : bindingResult.getFieldErrors()) {
                 model.addAttribute(fe.getField() + "_error", true);
+                System.out.println(fe.getField() + "_error");
                 log.trace("FieldError: {}", fe);
             }
             return "mushrooms/register";
