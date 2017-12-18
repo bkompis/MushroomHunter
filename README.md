@@ -6,6 +6,21 @@ Project repository for PA165 - team Mushroom Hunter
 
 [![Build Status](https://travis-ci.org/bkompis/MushroomHunter.svg?branch=master)](https://travis-ci.org/bkompis/MushroomHunter)
 
+
+### Run instructions
+```sh
+mvn clean install && cd mvc && mvn tomcat7:run #(MVC)
+mvn clean install && cd rest && mvn tomcat7:run #(REST)
+```
+
+###Prepared users:
+* Admin: 
+    * nickname: `admin`
+    * password: `Password.123`
+* Non-admin: 
+    * nickname: `john`
+    * password: `Password.123`
+
 #### Testing commands for REST interface:
 ```
 curl -i -X GET http://localhost:8080/pa165/rest
