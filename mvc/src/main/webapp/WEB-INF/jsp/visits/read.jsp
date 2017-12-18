@@ -22,7 +22,7 @@
         }
     </script>
 
-    <table class="table"> <%-- TODO: change size, add create visit button--%>
+    <table class="table">
         <caption><c:out value="${visit.hunter.userNickname}"/>s visit: <c:out value="${visit.note}"/></caption>
         <thead>
         <tr>
@@ -82,7 +82,7 @@
         </tbody>
     </table>
     <button class="btn" onclick="location.href='${pageContext.request.contextPath}/visits/create'">
-        Record a new visit <%--TODO: pre-fill form with this visit --%>
+        Record a new visit
     </button>
 
 </jsp:attribute>

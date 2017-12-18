@@ -67,7 +67,6 @@ public class VisitFacadeImpl implements VisitFacade {
         //MushroomHunter hunter = beanMappingService.mapTo(visit.getHunter(), MushroomHunter.class);
 
         List<Mushroom> mushrooms = new ArrayList<>();
-
         if (visit.getMushrooms() != null) {
             for(MushroomDTO mushroomDTO : visit.getMushrooms()) {
                 mushrooms.add(mushroomService.findMushroomById(mushroomDTO.getId()));
@@ -111,9 +110,17 @@ public class VisitFacadeImpl implements VisitFacade {
             throw new IllegalArgumentException("Visit with null forestDTO or HunterDTO cannot be updated");
         }
 
-        Forest forest = beanMappingService.mapTo(visit.getForest(), Forest.class);
-        MushroomHunter hunter = beanMappingService.mapTo(visit.getHunter(), MushroomHunter.class);
-        List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
+        //Forest forest = beanMappingService.mapTo(visit.getForest(), Forest.class);
+        Forest forest = forestService.findForestById(visit.getForest().getId());
+        //MushroomHunter hunter = beanMappingService.mapTo(visit.getHunter(), MushroomHunter.class);
+        MushroomHunter hunter = mushroomHunterService.findHunterById(visit.getHunter().getId());
+        //List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
+        List<Mushroom> mushrooms = new ArrayList<>();
+        if (visit.getMushrooms() != null) {
+            for(MushroomDTO mushroomDTO : visit.getMushrooms()) {
+                mushrooms.add(mushroomService.findMushroomById(mushroomDTO.getId()));
+            }
+        }
 
         Visit entityVisit = service.findVisitById(visit.getId());
         if (entityVisit == null) {

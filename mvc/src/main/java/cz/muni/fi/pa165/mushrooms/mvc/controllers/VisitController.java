@@ -109,8 +109,7 @@ public class VisitController {
         VisitDTO visit = visitFacade.createVisit(formBean);
 
         redirectAttributes.addFlashAttribute("alert_success", "Register visit " + formBean.getDate() + " succeeded");
-
-        return "redirect:" + uriBuilder.path("/").build().toUriString(); //TODO: change to "profile" page
+        return "redirect:" + uriBuilder.path("/visits/read/{id}").buildAndExpand(visit.getId()).encode().toUriString();
     }
 
 
@@ -136,9 +135,12 @@ public class VisitController {
     public String editUser(@PathVariable long id, Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
 
         log.debug("[VISIT] Edit {}", id);
+
+        MushroomHunterDTO hunter = (MushroomHunterDTO) request.getSession().getAttribute("user");
         VisitDTO visitDTO = visitFacade.findById(id);
 
         model.addAttribute("visitEdit", visitDTO);
+        model.addAttribute("hunter", hunter.getId());
         model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
         model.addAttribute("forests", forestFacade.findAllForests());
         return "/visits/edit";
@@ -153,6 +155,7 @@ public class VisitController {
                          RedirectAttributes redirectAttributes,
                          HttpServletRequest request) {
 
+        MushroomHunterDTO hunter = (MushroomHunterDTO) request.getSession().getAttribute("user");
         formBean.setId(id);
 
         log.debug("Visit - update");
@@ -170,8 +173,6 @@ public class VisitController {
             model.addAttribute("visitEdit", formBean);
             return "visits/edit";
         }
-
-        formBean.setHunter(hunterFacade.findHunterById(1L));
 
         log.debug("[HUNTER] Update: {}", formBean);
         visitFacade.updateVisit(formBean);
@@ -194,6 +195,5 @@ public class VisitController {
                         return null;
                     }
                 });
-        //binder.registerCustomEditor(String.class, "hunter", );
     }
 }

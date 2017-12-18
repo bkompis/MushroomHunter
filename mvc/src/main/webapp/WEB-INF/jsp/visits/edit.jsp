@@ -12,8 +12,10 @@
     <form:form method="post" action="${pageContext.request.contextPath}/${end}/edit/${visitEdit.id}"
                modelAttribute="visitEdit" cssClass="form-horizontal">
 
+        <form:input type="hidden" path="hunter" value="${hunter}" />
+
         <div class="form-group ${note_error?'has-error':''}">
-            <form:label path="note" cssClass="col-sm-2 control-label">Visit note</form:label>
+            <form:label path="note" cssClass="col-sm-2 control-label">Note</form:label>
             <div class="col-sm-10">
                 <form:input path="note" cssClass="form-control"/>
                 <form:errors path="note" cssClass="help-block"/>
@@ -21,11 +23,11 @@
         </div>
 
         <div class="form-group ${forest_error?'has-error':''}">
-            <form:label path="forest" cssClass="col-sm-2 control-label">Forest</form:label>
+            <form:label path="forest" cssClass="col-sm-2 control-label" >Forest</form:label>
             <div class="col-sm-10">
-                <form:select path="forest" name="forests">
+                <form:select path="forest" name="forest">
                     <c:forEach items="${forests}" var="forest">
-                        <option value="${forest.name}">${forest.name}</option>
+                        <form:option value="${forest.id}">${forest.name}</form:option>
                     </c:forEach>
                 </form:select>
                 <form:errors path="forest" cssClass="help-block"/>
@@ -35,11 +37,7 @@
         <div class="form-group ${mushrooms_error?'has-error':''}">
             <form:label path="mushrooms" cssClass="col-sm-2 control-label">Mushrooms found</form:label>
             <div class="col-sm-10">
-                <form:select path="mushrooms" name="mushrooms" multiple="multiple">
-                    <c:forEach items="${mushrooms}" var="mushroom">
-                        <option value="${mushroom.name}">${mushroom.name}</option>
-                    </c:forEach>
-                </form:select>
+                <form:select path="mushrooms" name="mushrooms" multiple="true" items="${mushrooms}" itemLabel="name" itemValue="id"/>
                 <form:errors path="mushrooms" cssClass="help-block"/>
             </div>
         </div>
