@@ -2,7 +2,10 @@ package cz.muni.fi.pa165.mushrooms.service;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -10,6 +13,7 @@ import javax.inject.Inject;
 
 import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
+import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
 import org.springframework.dao.DataAccessException;
@@ -24,6 +28,9 @@ import org.springframework.stereotype.Service;
 public class MushroomHunterServiceImpl implements MushroomHunterService {
     @Inject
     private MushroomHunterDao hunterDao;
+
+    @Inject
+    private VisitService visitService;
 
     @Override
     public List<MushroomHunter> findAllHunters() throws DataAccessException {
@@ -65,6 +72,11 @@ public class MushroomHunterServiceImpl implements MushroomHunterService {
     @Override
     public void deleteHunter(MushroomHunter hunter) throws DataAccessException {
         try {
+            List<Visit> visits = new ArrayList<>(hunter.getVisits());
+            for (Visit v : visits){
+                visitService.deleteVisit(v);
+            }
+
             hunterDao.delete(hunter);
         } catch (Throwable e) {
             throw new EntityOperationServiceException("hunter", "delete", hunter, e);
