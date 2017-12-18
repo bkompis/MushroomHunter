@@ -2,13 +2,25 @@ package cz.muni.fi.pa165.mushrooms.dto;
 
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * @author Buvko
  */
 public class MushroomDTO {
+
     private Long id;
+
+    @NotNull
+    @Size(min = 3, max = 50)
     private String name;
+
+    @NotNull
     private MushroomType type;
+
+    @NotNull
+    @Size(min = 3, max = 50) //TODO: define better
     private String intervalOfOccurrence;    ///////// TODO String - Date
 
     public Long getId() {
