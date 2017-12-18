@@ -122,7 +122,7 @@ public class ForestController {
     public String create(@Valid @ModelAttribute("forestCreate") AddEditForestDTO formBean,HttpServletRequest request,
                          BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
                          UriComponentsBuilder uriBuilder) {
-        System.err.println("FOOOOOO--------------");
+
         String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
         if(res != null) return res;
 
@@ -158,8 +158,12 @@ public class ForestController {
      * @return JSP page
      */
     @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String newForest(Model model) {
+    public String newForest(Model model,HttpServletRequest request, RedirectAttributes redirectAttributes,
+                            UriComponentsBuilder uriBuilder) {
         log.debug("new()");
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
+
         model.addAttribute("forestCreate", new ForestDTO());
         return "forests/register";
     }

@@ -4,6 +4,7 @@ package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomFacade;
+import cz.muni.fi.pa165.mushrooms.mvc.Tools;
 import cz.muni.fi.pa165.mushrooms.mvc.forms.MushroomDTOValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +76,11 @@ public class MushroomController {
      * @return JSP page
      */
     @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String newMushroom(Model model) {
+    public String newMushroom(HttpServletRequest request, Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder uriBuilder) {
         log.debug("new()");
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
+
         model.addAttribute("mushroomCreate", new MushroomDTO());
         return "mushrooms/register";
     }

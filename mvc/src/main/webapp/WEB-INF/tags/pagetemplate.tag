@@ -61,7 +61,7 @@
               class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><my:a href="/auth/logout"><f:message key="navigation.user.logout"/></my:a></li>
-            <li><my:a href="/users/edit/${sessionScope.user.id}"><f:message key="navigation.user.edit"/></my:a></li>
+            <li><my:a href="/hunters/read/${sessionScope.user.id}"><f:message key="navigation.user.profile"/></my:a></li>
           </ul>
           </c:if>
         </li>
