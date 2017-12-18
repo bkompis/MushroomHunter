@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: bencikpeter
-  Date: 16/12/2017
-  Time: 11:18
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="utf-8" trimDirectiveWhitespaces="false" session="true" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="my" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
