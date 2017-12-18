@@ -41,7 +41,7 @@ public class Visit {
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     //@JoinColumn(name = "visit_mushroom", nullable = true) // join column on one to many? o.O
     private List<Mushroom> mushrooms = new ArrayList<>();
 
