@@ -13,7 +13,7 @@ mvn clean install && cd mvc && mvn tomcat7:run #(MVC)
 mvn clean install && cd rest && mvn tomcat7:run #(REST)
 ```
 
-###Prepared users:
+### Prepared users:
 * Admin: 
     * nickname: `admin`
     * password: `Password.123`
