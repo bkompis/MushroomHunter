@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
-import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
+import cz.muni.fi.pa165.mushrooms.dto.AddEditForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
@@ -9,8 +9,6 @@ import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.ForestService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomService;
-import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,22 +70,23 @@ public class ForestFacadeImpl implements ForestFacade {
     }
 
     @Override
-    public void updateForest(ForestDTO forest) {
+    public ForestDTO updateForest(AddEditForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
         Forest entityForest = service.findForestById(forest.getId());
         if (entityForest == null) {
-            //TODO: react to it somehow
+            throw new IllegalArgumentException("no forest found for id " + forest.getId());
         }
         entityForest.setDescription(forest.getDescription());
         entityForest.setName(forest.getName());
         service.updateForest(entityForest);
 
+        return beanMappingService.mapTo(service.findForestById(forest.getId()), ForestDTO.class);
     }
 
     @Override
-    public void createForest(ForestDTO forest) {
+    public ForestDTO createForest(AddEditForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
@@ -96,7 +95,8 @@ public class ForestFacadeImpl implements ForestFacade {
         newForest.setDescription(forest.getDescription());
 
         service.createForest(newForest);
-        forest.setId(newForest.getId());
+
+        return beanMappingService.mapTo(service.findForestByName(forest.getName()), ForestDTO.class);
     }
 
     @Override
