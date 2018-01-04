@@ -38,7 +38,15 @@
             <c:forEach items="${visits}" var="visit">
                 <tr>
                     <td>
-                        <my:a href="/hunters/read/${visit.hunter.id}"><c:out value="${visit.hunter.userNickname}"/></my:a>
+                        <c:choose>
+                            <c:when test="${sessionScope.user.admin || visit.hunter.id == sessionScope.user.id}" >
+                                <my:a href="/hunters/read/${visit.hunter.id}"><c:out value="${visit.hunter.userNickname}"/></my:a>
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="${visit.hunter.userNickname}"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                     </td>
                     <td>
                         <my:a href="/forests/read/${visit.forest.id}"><c:out value="${visit.forest.name}"/></my:a>
