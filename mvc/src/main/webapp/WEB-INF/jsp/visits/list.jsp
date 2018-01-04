@@ -41,7 +41,7 @@
                         <my:a href="/hunters/read/${visit.hunter.id}"><c:out value="${visit.hunter.userNickname}"/></my:a>
                     </td>
                     <td>
-                        <my:a href="/forests/read/${visit.hunter.id}"><c:out value="${visit.forest.name}"/></my:a>
+                        <my:a href="/forests/read/${visit.forest.id}"><c:out value="${visit.forest.name}"/></my:a>
                     </td>
                     <td>
                         <c:forEach items="${visit.mushrooms}" var="mushroom">
