@@ -22,28 +22,31 @@ mvn clean install && cd rest && mvn tomcat7:run #(REST)
     * password: `Password.123`
 
 #### Testing commands for REST interface:
-```
-curl -i -X GET http://localhost:8080/pa165/rest
-```
- * for displaying all hunters including information about the HTTP header (-i):
+We only implemented a REST interface for the Mushroom Hunter entity, supporting CRUD operations.
+
+ * Display all hunters including information about the HTTP header (-i):
 ```
 curl -i -X GET http://localhost:8080/pa165/rest/hunters
 ```
-* for displaying information about a hunter with id = 1:
+
+* Display information about a hunter with id = 1:
 ```
 curl -i -X GET http://localhost:8080/pa165/rest/hunters/1
 ```
-* for deleting a hunter with id = 1:
+
+* Delete a hunter with id = 1:
 ```
 curl -i -X DELETE http://localhost:8080/pa165/rest/hunters/1
 ```
-* for updating a hunter (you can change one or more parametres): 
+
+* Create a new hunter:
 ```
-curl -X PUT -i -H "Content-Type: application/json" --data '{"firstName":"test","surname":"test","admin":"false","userNickname":"XXX", "personalInfo":"lorem ipsum"}' http://localhost:8080/pa165/rest/
+curl -X POST -i -H "Content-Type: application/json" --data '{"userNickname":"testing","unencryptedPassword":"password","firstName":"foo","surname":"bar","personalInfo":"lorem ipsum","admin":"false"}' http://localhost:8080/pa165/rest/
 ```
-* for creating a new hunter:
+
+* Update a hunter (here: hunter with id = 1 gets all attributes changed from default): 
 ```
-curl -X POST -i -H "Content-Type: application/json" --data '{"firstName":"test","surname":"test","admin":"false","userNickname":"YYY", "personalInfo":"lorem ipsum", "passwordHash":"UNDEFINED"}' http://localhost:8080/pa165/rest/
+curl -X PUT -i -H "Content-Type: application/json" --data '{"id":1,"firstName":"somethingElse","surname":"entirely","userNickname":"newNick","personalInfo":"I'm a new person now!","admin":false}' http://localhost:8080/pa165/rest/
 ```
 
 
