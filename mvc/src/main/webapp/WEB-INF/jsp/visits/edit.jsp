@@ -42,12 +42,30 @@
             </div>
         </div>
 
+        <%--<div class="form-group ${date_error?'has-error':''}">--%>
+            <%--<form:label path="mushrooms" cssClass="col-sm-2 control-label">Date of visit</form:label>--%>
+            <%--<div class="col-sm-10">--%>
+                <%--<form:input path="date" cssClass="form-control"/>--%>
+                <%--<form:errors path="date" cssClass="help-block"/>--%>
+            <%--</div>--%>
+        <%--</div>--%>
         <div class="form-group ${date_error?'has-error':''}">
-            <form:label path="mushrooms" cssClass="col-sm-2 control-label">Date of visit</form:label>
-            <div class="col-sm-10">
-                <form:input path="date" cssClass="form-control"/>
-                <form:errors path="date" cssClass="help-block"/>
+            <form:label path="date" cssClass="col-sm-2 control-label">Date (YYYY-MM-DD)</form:label>
+            <div class="form-group col-sm-10">
+                <div class='input-group date' id='datetimepicker1'>
+                    <form:input  path="date" type='text' cssClass="form-control" />
+                    <form:errors path="date" cssClass="help-block"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
             </div>
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker1').datetimepicker({
+                        format:'YYYY-MM-DD'})
+                });
+            </script>
         </div>
 
       <button class="btn btn-primary" type="submit">Update Visit</button>

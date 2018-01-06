@@ -20,6 +20,21 @@
   <link rel="stylesheet"
         href="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/dist/css/bootstrap.min.css"
         crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/dist/css/bootstrap.css"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css"
+        crossorigin="anonymous">
+
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/jquery/dist/jquery.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/moment/moment.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/js/collapse.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/js/transition.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+
   <jsp:invoke fragment="head"/>
 </head>
 <body>
@@ -111,9 +126,6 @@
   <footer class="footer" style="position:absolute; bottom:1px">
     <p>&copy;&nbsp;<%=java.time.Year.now().toString()%>&nbsp;Masaryk University</p>
   </footer>
-  <script src="${pageContext.request.contextPath}/resources/default/node_modules/jquery/dist/jquery.min.js"></script>
-  <script
-      src="${pageContext.request.contextPath}/resources/default/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-</div>
+  </div>
 </body>
 </html>

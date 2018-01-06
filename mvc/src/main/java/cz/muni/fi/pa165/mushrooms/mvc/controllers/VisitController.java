@@ -75,7 +75,7 @@ public class VisitController {
         model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
         model.addAttribute("forests", forestFacade.findAllForests());
         return "visits/create";
-    } //Password.123
+    }
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -87,8 +87,6 @@ public class VisitController {
                            HttpServletRequest request) {
 
         MushroomHunterDTO hunter = (MushroomHunterDTO) request.getSession().getAttribute("user");
-
-        //log.error("creating visit " + hunter + "  " + formBean.getNote() + " " + formBean.getForest() + " " + formBean.getMushrooms() + " " + formBean.getDate(), formBean);
 
         if (bindingResult.hasErrors()) {
             for (ObjectError ge : bindingResult.getGlobalErrors()) {
