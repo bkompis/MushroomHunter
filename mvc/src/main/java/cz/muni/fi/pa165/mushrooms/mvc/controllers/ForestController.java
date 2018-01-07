@@ -128,10 +128,26 @@ public class ForestController {
         return "redirect:" + uriBuilder.path("/forests/read/{id}").buildAndExpand(id).encode().toUriString();
     }
 
+    /**
+     * Prepares an empty form.
+     *
+     * @param model data to be displayed
+     * @return JSP page
+     */
+    @RequestMapping(value = "/new", method = RequestMethod.GET)
+    public String newForest(Model model,HttpServletRequest request, RedirectAttributes redirectAttributes,
+                            UriComponentsBuilder uriBuilder) {
+        log.info("new forest - form");
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
+
+        model.addAttribute("forestCreate", new AddEditForestDTO());
+        return "forests/register";
+    }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String create(@Valid @ModelAttribute("forestCreate") AddEditForestDTO formBean,HttpServletRequest request,
-                         BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
+    public String create(@Valid @ModelAttribute("forestCreate") AddEditForestDTO formBean,BindingResult bindingResult,
+                         HttpServletRequest request, Model model, RedirectAttributes redirectAttributes,
                          UriComponentsBuilder uriBuilder) {
 
         String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
@@ -140,6 +156,7 @@ public class ForestController {
         log.info("create(forestCreate={})", formBean);
         //in case of validation error forward back to the the form
         if (bindingResult.hasErrors()) {
+            log.warn("errors in forest create - validation. Forest={}", formBean);
             for (ObjectError ge : bindingResult.getGlobalErrors()) {
                 log.trace("ObjectError: {}", ge);
             }
@@ -206,25 +223,6 @@ public class ForestController {
         }
         return result;
     }
-
-
-        /**
-         * Prepares an empty form.
-         *
-         * @param model data to be displayed
-         * @return JSP page
-         */
-    @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String newForest(Model model,HttpServletRequest request, RedirectAttributes redirectAttributes,
-                            UriComponentsBuilder uriBuilder) {
-        log.debug("new()");
-        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
-        if(res != null) return res;
-
-        model.addAttribute("forestCreate", new ForestDTO());
-        return "forests/register";
-    }
-
 
 }
 

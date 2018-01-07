@@ -22,7 +22,7 @@
         }
     </script>
 
-    <table class="table"> <%-- TODO: change size, add create visit button--%>
+    <table class="table">
         <caption>Forest '<c:out value="${forests.name}"/>'</caption>
         <thead>
         <tr>
