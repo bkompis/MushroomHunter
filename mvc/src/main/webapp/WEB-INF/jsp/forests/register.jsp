@@ -9,7 +9,7 @@
 <jsp:attribute name="body">
 
     <c:set var="end" value="forests"/>
-    <form:form method="post" action="${pageContext.request.contextPath}/forests/new/"
+    <form:form method="post" action="${pageContext.request.contextPath}/forests/new"
                modelAttribute="forestCreate" cssClass="form-horizontal">
 
           <div class="form-group ${name_error?'has-error':''}">
@@ -20,7 +20,7 @@
               </div>
           </div>
 
-          <div class="form-group ${name_error?'has-error':''}">
+          <div class="form-group ${description_error?'has-error':''}">
                <form:label path="description" cssClass="col-sm-2 control-label">Description</form:label>
                <div class="col-sm-10">
                   <form:input path="description" cssClass="form-control"/>

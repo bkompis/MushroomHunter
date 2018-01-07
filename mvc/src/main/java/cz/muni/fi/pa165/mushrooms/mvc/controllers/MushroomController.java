@@ -120,7 +120,6 @@ public class MushroomController {
             }
             for (FieldError fe : bindingResult.getFieldErrors()) {
                 model.addAttribute(fe.getField() + "_error", true);
-                System.out.println(fe.getField() + "_error");
                 log.trace("FieldError: {}", fe);
             }
             return "mushrooms/register";
