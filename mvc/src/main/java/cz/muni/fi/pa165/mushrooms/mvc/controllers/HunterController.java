@@ -4,8 +4,13 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
+import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterUpdateDTO;
+import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
+import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
+import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomHunterFacade;
 import cz.muni.fi.pa165.mushrooms.facade.VisitFacade;
 import cz.muni.fi.pa165.mushrooms.mvc.Tools;
@@ -21,8 +26,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -33,6 +43,9 @@ public class HunterController {
 
     @Inject
     private MushroomHunterFacade hunterFacade;
+
+    @Inject
+    private ForestFacade forestFacade;
 
     @Inject
     private VisitFacade visitFacade;
@@ -142,6 +155,53 @@ public class HunterController {
 
         redirectAttributes.addFlashAttribute("alert_success", "Hunter " + result.getUserNickname() + " was updated");
         return "redirect:" + uriBuilder.path("/hunters/read/{id}").buildAndExpand(id).encode().toUriString();
+    }
+
+    @RequestMapping(value = "/best", method = RequestMethod.GET)
+    public String findTopHunters(Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
+        log.info("[HUNTER] Find best - get");
+
+        Map<MushroomHunterDTO, Integer> huntersWithMostVisits = mostVisits(hunterFacade.findAllHunters(), null);
+
+        model.addAttribute("forests", forestFacade.findAllForests());
+        model.addAttribute("hunters", huntersWithMostVisits);
+
+        return "hunters/best";
+    }
+
+    private Map<MushroomHunterDTO, Integer> mostVisits(List<MushroomHunterDTO> allHunters, Long forestId) {
+        Map<MushroomHunterDTO, Integer> res = new HashMap<>();
+
+        for(MushroomHunterDTO h: allHunters) {
+            if (forestId == null) {
+                res.put(h, h.getVisits().size());
+            } else{
+                int count = 0;
+                for (VisitDTO v : h.getVisits()){
+                    if (v.getForest().getId().equals(forestId)){
+                        ++count;
+                    }
+                }
+                if (count > 0) {
+                    res.put(h, count);
+                }
+            }
+        }
+        // order!
+        return res;
+    }
+
+    @RequestMapping(value = "/best", method = RequestMethod.POST)
+    public String findTopHunters_post(@RequestParam(required=false) Long forestId, Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
+        log.info("[HUNTER] Find best - get");
+        log.info("forest id={}", forestId);
+
+        Map<MushroomHunterDTO, Integer> huntersWithMostVisits = mostVisits(hunterFacade.findAllHunters(), forestId);
+
+        model.addAttribute("forests", forestFacade.findAllForests());
+        model.addAttribute("hunters", huntersWithMostVisits);
+
+        return "hunters/best";
     }
 
 }
