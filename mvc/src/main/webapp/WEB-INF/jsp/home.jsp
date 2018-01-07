@@ -13,6 +13,8 @@
         <div class="container">
             <h3>Care to look at the statistics?</h3>
             <p><a href="${pageContext.request.contextPath}/forests/find">Find the best forest for a mushroom</a></p>
+            <br/>
+            <p><a href="${pageContext.request.contextPath}/hunters/best">See the most active mushroom hunters</a></p>
         </div>
     </jsp:attribute>
 </my:pagetemplate>
